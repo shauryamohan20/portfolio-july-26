@@ -1,53 +1,59 @@
 import { profile } from "@/data/content";
-import { ArrowUpRight, MailIcon } from "./Icons";
 
 export default function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-16 pb-20 sm:pt-24">
-      {/* soft accent glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
-        style={{ background: "radial-gradient(closest-side, var(--accent), transparent)" }}
-      />
-      <div className="mx-auto max-w-3xl px-5">
-        <div className="animate-fadeUp">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-            <span className="h-2 w-2 rounded-full bg-accent" />
-            Available for freelance work
-          </span>
+    <div
+      id="top"
+      className="heroElem relative z-1 m-auto flex w-full flex-col items-center justify-center pt-20 pb-40 text-center"
+      style={{ maxWidth: "1200px" }}
+    >
+      <p className="mb-5 text-xl">Hey, I&apos;m {profile.firstName}. 👋</p>
+      <h1 className="relative mb-10 inline-block w-auto max-w-2xl text-5xl font-bold tracking-tighter md:text-6xl lg:max-w-4xl lg:text-7xl">
+        I enjoy <span className="text-fun-pink">building</span> and{" "}
+        <span className="text-fun-pink">designing</span> for the web.
+
+        {/* eslint-disable @next/next/no-img-element */}
+        <img
+          alt=""
+          className="sqD squiggle-hero-html top-[-90px] right-[5%] w-16 sm:top-[-90px] sm:right-[170px]"
+          style={{ animationDelay: "0.1s" }}
+          src="/static/doodles/hero/html.svg"
+        />
+        <img
+          alt=""
+          className="sqD bottom-[-320px] right-[65%] sm:right-[45%]"
+          style={{ animationDelay: "0.3s" }}
+          src="/static/doodles/hero/dino.svg"
+        />
+        <img
+          alt=""
+          className="sqD bottom-[-150px] left-[100px] hidden sm:block lg:left-[160px]"
+          style={{ animationDelay: "0.5s" }}
+          src="/static/doodles/hero/js.svg"
+        />
+        <img
+          alt=""
+          className="sqD bottom-[-180px] right-[-60px] sm:right-0"
+          style={{ animationDelay: "0.7s" }}
+          src="/static/doodles/hero/paintbrush.svg"
+        />
+        <img
+          alt=""
+          className="sqD squiggle-hero-pop1 top-[-130px] left-[15%] hidden sm:block lg:left-[120px]"
+          src="/static/doodles/hero/pop1.svg"
+        />
+        <img
+          alt=""
+          className="sqD bottom-[-85px] left-[-35px] opacity-40 sm:bottom-[-100px] sm:left-5"
+          style={{ animationDelay: "0.9s" }}
+          src="/static/doodles/hero/code.svg"
+        />
+      </h1>
+      <a href="#projects">
+        <div className="cursor-pointer rounded-full border-2 border-white bg-bg px-10 py-4 text-xl font-bold whitespace-nowrap text-white transition-colors hover:border-fun-pink hover:bg-fun-pink hover:text-white">
+          Tell me more
         </div>
-
-        <h1 className="animate-fadeUp mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
-          Hey, I&apos;m {profile.firstName}.
-          <span className="ml-2 inline-block animate-floaty">👋</span>
-        </h1>
-
-        <p className="animate-fadeUp mt-4 max-w-xl text-lg text-muted">
-          {profile.tagline}
-        </p>
-
-        <p className="animate-fadeUp mt-4 max-w-xl leading-relaxed text-muted">
-          {profile.intro}
-        </p>
-
-        <div className="animate-fadeUp mt-8 flex flex-wrap items-center gap-3">
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
-          >
-            <MailIcon width={18} height={18} />
-            Get in touch
-          </a>
-          <a
-            href="#projects"
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3 text-sm font-medium transition-colors hover:text-accent"
-          >
-            View my work
-            <ArrowUpRight width={16} height={16} />
-          </a>
-        </div>
-      </div>
-    </section>
+      </a>
+    </div>
   );
 }
