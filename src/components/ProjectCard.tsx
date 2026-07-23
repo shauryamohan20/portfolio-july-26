@@ -37,6 +37,20 @@ export default function ProjectCard({ project }: { project: Project }) {
             </li>
           ))}
         </ul>
+        {href && (
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-fun-pink px-3 py-1.5 text-xs font-bold text-fun-pink transition-colors hover:bg-fun-pink hover:text-bg"
+          >
+            Visit Website
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg>
+          </a>
+        )}
       </div>
     </div>
   );

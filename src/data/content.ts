@@ -30,6 +30,7 @@ export const projects: Project[] = [
     title: "Tesoro",
     desc: "A gaming economy rewards platform where players earn and redeem in-game value, built for speed with a game-first interface.",
     img: "/static/projects/tesoro.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/tesoro.html",
     tags: ["Next.js", "React", "Tailwind"],
   },
   {
@@ -37,6 +38,7 @@ export const projects: Project[] = [
     title: "Firselo",
     desc: "A marketplace for buying and selling used electronics, focused on trust, clear listings, and a smooth checkout flow.",
     img: "/static/projects/firselo.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/firselo.html",
     tags: ["Web Design", "UI/UX", "React"],
   },
   {
@@ -44,6 +46,7 @@ export const projects: Project[] = [
     title: "Cord Studio",
     desc: "An e-commerce storefront for premium clothing and leather goods with a refined, conversion-focused product experience.",
     img: "/static/projects/cord-studio.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/cord-studio.html",
     tags: ["Shopify", "E-commerce", "Liquid"],
   },
   {
@@ -51,6 +54,7 @@ export const projects: Project[] = [
     title: "Black Fridye",
     desc: "A brand site for a sustainable clothing label, pairing storytelling with a smooth shopping experience.",
     img: "/static/projects/black-fridye.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/black-fridye.html",
     tags: ["Shopify", "Branding"],
   },
   {
@@ -58,6 +62,7 @@ export const projects: Project[] = [
     title: "Avantgarde Artist Agency",
     desc: "A portfolio and booking site for an artist agency, showcasing talent with bold, editorial layouts.",
     img: "/static/projects/avantgarde.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/avantgarde.html",
     tags: ["WordPress", "Web Design"],
   },
   {
@@ -65,6 +70,7 @@ export const projects: Project[] = [
     title: "Innovative Dental Springfield",
     desc: "A modern, accessible website for a dental practice, built to drive appointment bookings and patient confidence.",
     img: "/static/projects/innovative-dental.svg",
+    link: "https://shauryam-portfolio.vercel.app/projects/innovative-dental.html",
     tags: ["WordPress", "SEO"],
   },
 ];
