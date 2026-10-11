@@ -114,19 +114,19 @@
     ]
   },
   {
-    "id": "3",
-    "slug": "cord-studio",
-    "title": "Cord Studio",
+    "id": "4",
+    "slug": "black-fridye",
+    "title": "Black Fridye",
     "category": "Web Development",
-    "desc": "An e-commerce storefront for contemporary clothing and premium leather goods, with bespoke monogramming.",
-    "overview": "Cord Studio is an Indian contemporary fashion brand offering a curated range of clothing and premium leather goods. The brand blends modern design sensibilities with artisanal craftsmanship, releasing limited seasonal collections that celebrate quality and individuality. A standout feature of the brand is its personalised monogramming service, allowing customers to add a bespoke touch to their leather pieces. The e-commerce experience is crafted to reflect the brand's refined aesthetic, with clean layouts, editorial photography, and an intuitive shopping journey that makes luxury feel accessible and personal.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Contemporary-Clothing-Premium-Leather-Goods-_-Cord-Studio-03-29-2026_03_43_AM_lr1lf8.png",
-    "imgAlt": "Cord Studio storefront homepage",
-    "link": "https://www.cordstudio.in/",
+    "desc": "A campaign store for a sustainable clothing label, pairing provocative storytelling with a one-service checkout.",
+    "overview": "Black Fridye is a sustainable fashion initiative by Citizen Wolf, launched as an annual event every November as an ethical counter to Black Friday consumerism. Instead of buying new, customers send in their faded or worn garments to be professionally re-dyed, giving their clothes a second life and dramatically reducing textile waste. The campaign-style website is bold, provocative, and purposefully minimal, using strong typography and a high-contrast palette to challenge fast fashion norms. The e-commerce flow is streamlined around a single service, making it easy for customers to understand the process, select their garment, and book a dye job in just a few clicks.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737101/Black-Fridye-by-Citizen-Wolf-Love-Your-Clothes-Longer-03-29-2026_04_00_AM_chkmid.png",
+    "imgAlt": "Black Fridye campaign site homepage",
+    "link": "https://blackfridye.com/",
     "tags": [
       "Shopify",
       "E-commerce",
-      "Liquid"
+      "Branding"
     ],
     "stack": [
       {
@@ -148,19 +148,19 @@
     ]
   },
   {
-    "id": "4",
-    "slug": "black-fridye",
-    "title": "Black Fridye",
+    "id": "3",
+    "slug": "cord-studio",
+    "title": "Cord Studio",
     "category": "Web Development",
-    "desc": "A campaign store for a sustainable clothing label, pairing provocative storytelling with a one-service checkout.",
-    "overview": "Black Fridye is a sustainable fashion initiative by Citizen Wolf, launched as an annual event every November as an ethical counter to Black Friday consumerism. Instead of buying new, customers send in their faded or worn garments to be professionally re-dyed, giving their clothes a second life and dramatically reducing textile waste. The campaign-style website is bold, provocative, and purposefully minimal, using strong typography and a high-contrast palette to challenge fast fashion norms. The e-commerce flow is streamlined around a single service, making it easy for customers to understand the process, select their garment, and book a dye job in just a few clicks.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737101/Black-Fridye-by-Citizen-Wolf-Love-Your-Clothes-Longer-03-29-2026_04_00_AM_chkmid.png",
-    "imgAlt": "Black Fridye campaign site homepage",
-    "link": "https://blackfridye.com/",
+    "desc": "An e-commerce storefront for contemporary clothing and premium leather goods, with bespoke monogramming.",
+    "overview": "Cord Studio is an Indian contemporary fashion brand offering a curated range of clothing and premium leather goods. The brand blends modern design sensibilities with artisanal craftsmanship, releasing limited seasonal collections that celebrate quality and individuality. A standout feature of the brand is its personalised monogramming service, allowing customers to add a bespoke touch to their leather pieces. The e-commerce experience is crafted to reflect the brand's refined aesthetic, with clean layouts, editorial photography, and an intuitive shopping journey that makes luxury feel accessible and personal.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Contemporary-Clothing-Premium-Leather-Goods-_-Cord-Studio-03-29-2026_03_43_AM_lr1lf8.png",
+    "imgAlt": "Cord Studio storefront homepage",
+    "link": "https://www.cordstudio.in/",
     "tags": [
       "Shopify",
       "E-commerce",
-      "Branding"
+      "Liquid"
     ],
     "stack": [
       {
