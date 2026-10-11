@@ -10,7 +10,7 @@
     "about": {
       "heading": "Design-minded. Code-driven. Always building.",
       "body": "I'm a web developer with a background in computer science and a passion for creating things for the web. I enjoy working at the intersection of design and development, where an idea becomes something people can actually use.\r\n\r\nMy work spans custom websites, interactive user interfaces, and ecommerce experiences. Using technologies like React, Next.js, JavaScript, and GSAP, I focus on building digital products that feel considered, perform well, and work seamlessly across devices.\r\n\r\nBeyond writing code, I care about the details: how a page flows, how an interaction feels, how quickly a site loads, and how the overall experience serves its purpose. I believe good development isn't just about making something work. It's about making it work well.\r\n\r\nI'm always exploring new tools, refining my approach, and looking for interesting problems to solve.",
-      "image": "",
+      "image": "/static/about/about-1791752878362.webp",
       "imageAlt": ""
     }
   }
