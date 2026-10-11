@@ -6,7 +6,7 @@ export default function ProjectCard({ project }: { project: Project }) {
   const detail = `/projects/${project.slug}`;
 
   return (
-    <div className="mx-auto flex h-full max-w-sm flex-col">
+    <div className="mx-auto flex h-full w-full max-w-sm flex-col">
       <Link
         href={detail}
         aria-label={`${project.title} — case study`}
