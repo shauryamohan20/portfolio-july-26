@@ -197,5 +197,42 @@
         "icon": "https://cdn.simpleicons.org/nodedotjs/5FA04E"
       }
     ]
+  },
+  {
+    "id": "a925efd9-89c5-4825-ab85-81b7a4ce77d6",
+    "slug": "bezika",
+    "title": "Bezika",
+    "category": "Shopify Development",
+    "desc": "Developed a bilingual Shopify storefront for Bezika, combining organized product discovery, custom theme enhancements, and a seamless shopping experience for customers in Kuwait.",
+    "overview": "Bezika is a Kuwait-focused home and lifestyle ecommerce store built on Shopify, designed to deliver a smooth, intuitive, and visually engaging online shopping experience. The project focuses on creating a modern ecommerce storefront where customers can easily explore products, browse collections, discover offers, and shop in both Arabic and English.\r\n\r\nMy work involved Shopify store development and storefront customization, with an emphasis on product presentation, intuitive navigation, responsive layouts, and a consistent user experience across devices. The storefront was structured to make product discovery more straightforward while maintaining a cohesive visual identity throughout the shopping journey.\r\n\r\nA key aspect of the project was supporting a bilingual ecommerce experience for the Kuwaiti market. The Arabic and English storefronts help serve different language preferences, while the overall interface prioritizes accessibility, clarity, and ease of navigation. The implementation also involved working with Shopify's theme architecture and ecommerce functionality to tailor the store to the brand's requirements.\r\n\r\nThe result is a customized Shopify ecommerce website that brings together product organization, storefront design, and practical shopping functionality in one cohesive experience. Bezika demonstrates my experience in Shopify development, Liquid theme customization, ecommerce website design, responsive web development, and building bilingual online stores for businesses targeting the Middle Eastern market.\r\n\r\n**Technologies and focus areas:** Shopify, Liquid, JavaScript, HTML, CSS, ecommerce development, Shopify theme customization, responsive web design, bilingual storefronts, Arabic and English UX, and online store optimization.",
+    "img": "/static/projects/bezika-1791757965422.png",
+    "imgAlt": "Bezika website screenshot",
+    "link": "https://www.bezika.com/",
+    "tags": [
+      "Shopify",
+      "E-commerce",
+      "Liquid",
+      "JavaScript",
+      "UX/UI",
+      "Bilingual Store"
+    ],
+    "stack": [
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
+      },
+      {
+        "name": "Shopify",
+        "icon": "https://cdn.simpleicons.org/shopify/96BF48"
+      },
+      {
+        "name": "Figma",
+        "icon": "https://cdn.simpleicons.org/figma/F24E1E"
+      },
+      {
+        "name": "Liquid",
+        "icon": "https://marketplace.visualstudio.com/items?itemName=sissel.shopify-liquid"
+      }
+    ]
   }
 ]
