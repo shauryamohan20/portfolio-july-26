@@ -77,6 +77,7 @@ export default async function AdminLayout({
       <nav className="mt-6 flex gap-2 border-b border-fun-pink-dark pb-px">
         <AdminTab href="/admin" label="Projects" />
         <AdminTab href="/admin/testimonials" label="Testimonials" />
+        <AdminTab href="/admin/site" label="Page content" />
       </nav>
       <main className="pt-10">{children}</main>
     </div>

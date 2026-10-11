@@ -1,0 +1,17 @@
+[
+  {
+    "hero": {
+      "greeting": "Hey, I'm Shaurya. 👋",
+      "heading": "I enjoy *building* and *designing* for the web.",
+      "subtext": "",
+      "ctaLabel": "Tell me more",
+      "ctaHref": "#projects"
+    },
+    "about": {
+      "heading": "A little about me",
+      "body": "",
+      "image": "",
+      "imageAlt": ""
+    }
+  }
+]

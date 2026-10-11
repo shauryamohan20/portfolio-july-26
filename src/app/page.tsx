@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import About from "@/components/About";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
 import Testimonials from "@/components/Testimonials";
@@ -16,6 +17,7 @@ export default function Home() {
         <Navbar />
         <Hero />
         <div className="mt-20 space-y-32">
+          <About />
           <Projects />
           <Skills />
           <Testimonials />
