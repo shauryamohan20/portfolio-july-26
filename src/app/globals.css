@@ -68,17 +68,6 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-/* Testimonial big quote mark */
-.testimonialQuote::before {
-  content: "\201C";
-  position: absolute;
-  top: -10px;
-  left: -46px;
-  opacity: 0.75;
-  font-size: 80px;
-  color: var(--color-fun-pink);
-}
-
 /* Floating doodle decorations */
 .sqD {
   position: absolute;
