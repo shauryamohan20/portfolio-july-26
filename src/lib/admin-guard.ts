@@ -15,14 +15,52 @@ import { SESSION_COOKIE, verifySessionToken } from "./session";
  */
 
 export function adminConfigured() {
+  return configProblems().length === 0;
+}
+
+/**
+ * Why the admin is switched off, in plain language.
+ *
+ * Returned as a list so a deployed site can log the reason: a bare 404 gives
+ * no clue which variable is missing. Values are never logged, only whether
+ * they are present and long enough.
+ */
+export function configProblems(): string[] {
   const password = process.env.ADMIN_PASSWORD ?? "";
   const secret = process.env.SESSION_SECRET ?? "";
-  return password.length >= 8 && secret.length >= 32;
+  const problems: string[] = [];
+
+  if (!password) {
+    problems.push("ADMIN_PASSWORD is not set");
+  } else if (password.length < 8) {
+    problems.push(`ADMIN_PASSWORD is only ${password.length} characters (needs 8+)`);
+  }
+
+  if (!secret) {
+    problems.push("SESSION_SECRET is not set");
+  } else if (secret.length < 32) {
+    problems.push(`SESSION_SECRET is only ${secret.length} characters (needs 32+)`);
+  }
+
+  return problems;
 }
 
 export function adminEnabled() {
-  if (process.env.ENABLE_ADMIN === "false") return false;
-  return process.env.NODE_ENV !== "production" || adminConfigured();
+  if (process.env.ENABLE_ADMIN === "false") {
+    console.warn("[admin] disabled: ENABLE_ADMIN is set to false");
+    return false;
+  }
+  if (process.env.NODE_ENV !== "production") return true;
+
+  const problems = configProblems();
+  if (problems.length > 0) {
+    console.warn(
+      `[admin] returning 404 because ${problems.join(" and ")}. ` +
+        "Set them in your hosting environment (Production) and redeploy."
+    );
+    return false;
+  }
+  return true;
 }
 
 /** True when a login step is required (i.e. a password has been configured). */
