@@ -34,48 +34,6 @@
     ]
   },
   {
-    "id": "2",
-    "slug": "firselo",
-    "title": "Firselo",
-    "category": "Web Design",
-    "desc": "A peer-to-peer marketplace for buying and selling used electronics, focused on trust and clear listings.",
-    "overview": "Firselo is a peer-to-peer marketplace currently in development. It is a proprietary project and the full details will be available once it is completed and ready for release.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774738789/Verideal-_-Buy-and-Sell-Used-Electronics-Safely-03-29-2026_04_29_AM_vr3b0q.png",
-    "imgAlt": "Firselo marketplace interface design",
-    "status": "In development — the live site is not public yet.",
-    "tags": [
-      "Figma",
-      "Flask",
-      "UI/UX"
-    ],
-    "stack": [
-      {
-        "name": "Figma",
-        "icon": "https://cdn.simpleicons.org/figma/F24E1E"
-      },
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "Python",
-        "icon": "https://cdn.simpleicons.org/python/3776AB"
-      },
-      {
-        "name": "Flask",
-        "icon": "https://cdn.simpleicons.org/flask/ffffff"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      }
-    ]
-  },
-  {
     "id": "3",
     "slug": "cord-studio",
     "title": "Cord Studio",
