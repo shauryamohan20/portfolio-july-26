@@ -111,40 +111,6 @@
     "heroImg": "/static/projects/tesoro-hero-1791761734995.png"
   },
   {
-    "id": "4",
-    "slug": "black-fridye",
-    "title": "Black Fridye",
-    "category": "Web Development",
-    "desc": "A campaign store for a sustainable clothing label, pairing provocative storytelling with a one-service checkout.",
-    "overview": "Black Fridye is a sustainable fashion initiative by Citizen Wolf, launched as an annual event every November as an ethical counter to Black Friday consumerism. Instead of buying new, customers send in their faded or worn garments to be professionally re-dyed, giving their clothes a second life and dramatically reducing textile waste. The campaign-style website is bold, provocative, and purposefully minimal, using strong typography and a high-contrast palette to challenge fast fashion norms. The e-commerce flow is streamlined around a single service, making it easy for customers to understand the process, select their garment, and book a dye job in just a few clicks.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737101/Black-Fridye-by-Citizen-Wolf-Love-Your-Clothes-Longer-03-29-2026_04_00_AM_chkmid.png",
-    "imgAlt": "Black Fridye campaign site homepage",
-    "link": "https://blackfridye.com/",
-    "tags": [
-      "Shopify",
-      "E-commerce",
-      "Branding"
-    ],
-    "stack": [
-      {
-        "name": "Shopify",
-        "icon": "https://cdn.simpleicons.org/shopify/96BF48"
-      },
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      }
-    ]
-  },
-  {
     "id": "7d7aff41-aa2a-4a6e-bdbd-2c78cfb3b1b8",
     "slug": "coaching-with-maya",
     "title": "Coaching with Maya",
@@ -185,6 +151,40 @@
       {
         "name": "Figma",
         "icon": "https://cdn.simpleicons.org/figma/F24E1E"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "black-fridye",
+    "title": "Black Fridye",
+    "category": "Web Development",
+    "desc": "A campaign store for a sustainable clothing label, pairing provocative storytelling with a one-service checkout.",
+    "overview": "Black Fridye is a sustainable fashion initiative by Citizen Wolf, launched as an annual event every November as an ethical counter to Black Friday consumerism. Instead of buying new, customers send in their faded or worn garments to be professionally re-dyed, giving their clothes a second life and dramatically reducing textile waste. The campaign-style website is bold, provocative, and purposefully minimal, using strong typography and a high-contrast palette to challenge fast fashion norms. The e-commerce flow is streamlined around a single service, making it easy for customers to understand the process, select their garment, and book a dye job in just a few clicks.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737101/Black-Fridye-by-Citizen-Wolf-Love-Your-Clothes-Longer-03-29-2026_04_00_AM_chkmid.png",
+    "imgAlt": "Black Fridye campaign site homepage",
+    "link": "https://blackfridye.com/",
+    "tags": [
+      "Shopify",
+      "E-commerce",
+      "Branding"
+    ],
+    "stack": [
+      {
+        "name": "Shopify",
+        "icon": "https://cdn.simpleicons.org/shopify/96BF48"
+      },
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
       }
     ]
   },
