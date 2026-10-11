@@ -13,6 +13,7 @@ import {
 } from "@/lib/session";
 import type { Project, TechIcon } from "@/lib/project-types";
 import { slugify } from "@/lib/project-types";
+import { prepareUpload } from "@/lib/uploads";
 import {
   UPLOAD_PUBLIC_DIR,
   UPLOAD_REPO_DIR,
@@ -23,16 +24,6 @@ import {
 } from "@/lib/projects-store";
 
 export type FormState = { ok: boolean; message: string };
-
-const ALLOWED_IMAGE_TYPES: Record<string, string> = {
-  "image/png": "png",
-  "image/jpeg": "jpg",
-  "image/webp": "webp",
-  "image/avif": "avif",
-  "image/gif": "gif",
-  "image/svg+xml": "svg",
-};
-const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;
 
 /** Refresh every page that renders project data. */
 function revalidateProjectPages() {
@@ -83,26 +74,6 @@ function parseStack(formData: FormData): TechIcon[] {
   return stack;
 }
 
-/** Validate an uploaded thumbnail and work out where it will be stored. */
-async function prepareUpload(file: File, slug: string): Promise<PendingUpload> {
-  const extension = ALLOWED_IMAGE_TYPES[file.type];
-  if (!extension) {
-    throw new Error(`Unsupported image type: ${file.type || "unknown"}`);
-  }
-  if (file.size > MAX_UPLOAD_BYTES) {
-    throw new Error("That image is larger than 6MB.");
-  }
-
-  const safeSlug = slugify(slug) || "project";
-  const filename = `${safeSlug}-${Date.now()}.${extension}`;
-
-  return {
-    publicPath: `${UPLOAD_PUBLIC_DIR}/${filename}`,
-    repoPath: `${UPLOAD_REPO_DIR}/${filename}`,
-    bytes: Buffer.from(await file.arrayBuffer()),
-  };
-}
-
 /**
  * Build a project from the form, reusing the existing thumbnail when no new
  * file or URL was supplied.
@@ -126,7 +97,11 @@ async function projectFromForm(
   let upload: PendingUpload | undefined;
 
   if (file instanceof File && file.size > 0) {
-    upload = await prepareUpload(file, slug);
+    upload = await prepareUpload(file, {
+      nameHint: slug,
+      repoDir: UPLOAD_REPO_DIR,
+      publicDir: UPLOAD_PUBLIC_DIR,
+    });
     img = upload.publicPath;
   } else if (imgUrl) {
     img = imgUrl;

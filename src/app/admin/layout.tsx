@@ -10,6 +10,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+function AdminTab({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="rounded-t-lg px-4 py-2 text-sm text-fun-gray-light transition-colors hover:bg-fun-pink-darker hover:text-fun-pink"
+    >
+      {label}
+    </Link>
+  );
+}
+
 export default async function AdminLayout({
   children,
 }: {
@@ -63,6 +74,10 @@ export default async function AdminLayout({
           )}
         </div>
       </header>
+      <nav className="mt-6 flex gap-2 border-b border-fun-pink-dark pb-px">
+        <AdminTab href="/admin" label="Projects" />
+        <AdminTab href="/admin/testimonials" label="Testimonials" />
+      </nav>
       <main className="pt-10">{children}</main>
     </div>
   );

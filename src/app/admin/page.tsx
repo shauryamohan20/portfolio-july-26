@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { deleteProject, moveProject } from "./actions";
-import DeleteProjectButton from "@/components/admin/DeleteProjectButton";
+import ConfirmDeleteButton from "@/components/admin/ConfirmDeleteButton";
 import { readProjectsForAdmin, storageMode } from "@/lib/projects-store";
 
 // The list must always reflect what is on disk right now.
@@ -96,7 +96,7 @@ export default async function AdminHome(props: PageProps<"/admin">) {
               </Link>
               <form action={deleteProject}>
                 <input type="hidden" name="id" value={project.id} />
-                <DeleteProjectButton title={project.title} />
+                <ConfirmDeleteButton what={project.title} />
               </form>
             </div>
           </li>

@@ -1,0 +1,31 @@
+import type { Testimonial } from "@/lib/testimonial-types";
+
+/**
+ * Starting testimonials.
+ *
+ * Only used to create data/testimonials.json when that file is missing;
+ * after that the admin panel owns the content.
+ */
+export const testimonials: Testimonial[] = [
+  {
+    id: "1",
+    quote:
+      "The communication throughout the project was spot on, and everything was delivered on time and exactly as we imagined.",
+    name: "Shopify Client",
+    job: "E-commerce Store Owner",
+  },
+  {
+    id: "2",
+    quote:
+      "The code was clean, easy to understand, and exactly what I was looking for. A pleasure to work with.",
+    name: "Agency Client",
+    job: "Founder",
+  },
+  {
+    id: "3",
+    quote:
+      "My vision was executed perfectly. The quality and speed of the work were excellent — highly recommended.",
+    name: "WordPress Client",
+    job: "Small Business Owner",
+  },
+];

@@ -115,3 +115,12 @@ body::-webkit-scrollbar-thumb {
 .heroElem .sqD:not(.squiggle-hero-pop1) {
   animation: float 2s infinite ease-in-out;
 }
+
+/* Carousel track: scrollable without a visible scrollbar */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

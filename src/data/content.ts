@@ -33,28 +33,7 @@ export const skills: Skill[] = [
   { title: "Figma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
 ];
 
-export type Testimonial = { quote: string; name: string; job: string };
-
-export const testimonials: Testimonial[] = [
-  {
-    quote:
-      "The communication throughout the project was spot on, and everything was delivered on time and exactly as we imagined.",
-    name: "Shopify Client",
-    job: "E-commerce Store Owner",
-  },
-  {
-    quote:
-      "The code was clean, easy to understand, and exactly what I was looking for. A pleasure to work with.",
-    name: "Agency Client",
-    job: "Founder",
-  },
-  {
-    quote:
-      "My vision was executed perfectly. The quality and speed of the work were excellent — highly recommended.",
-    name: "WordPress Client",
-    job: "Small Business Owner",
-  },
-];
+export type { Testimonial } from "@/lib/testimonial-types";
 
 export const socials = [
   { name: "GitHub", link: "https://github.com/shauryamohan20", icon: "/static/icons/github-f.svg" },
