@@ -210,5 +210,34 @@
         "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
       }
     ]
+  },
+  {
+    "id": "45427bdb-ad4d-454e-a6fc-1c8ee2e31775",
+    "slug": "test-project",
+    "title": "Test Project",
+    "category": "Web Development",
+    "desc": "Karpus",
+    "overview": "Karpus",
+    "img": "/static/projects/test-project-1791746644501.png",
+    "imgAlt": "Test Project website screenshot",
+    "tags": [],
+    "stack": [
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "Tailwind CSS",
+        "icon": "https://cdn.simpleicons.org/tailwindcss/06B6D4"
+      },
+      {
+        "name": "Node.js",
+        "icon": "https://cdn.simpleicons.org/nodedotjs/5FA04E"
+      }
+    ]
   }
 ]
