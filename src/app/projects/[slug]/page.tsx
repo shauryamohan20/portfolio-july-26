@@ -6,9 +6,11 @@ import Navbar from "@/components/Navbar";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
-import { getProject, profile, projects } from "@/data/content";
+import { profile } from "@/data/content";
+import { getProjectBySlug, readProjects } from "@/lib/projects-store";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await readProjects();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
@@ -16,7 +18,7 @@ export async function generateMetadata(
   props: PageProps<"/projects/[slug]">
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const project = getProject(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return { title: `Project not found — ${profile.name}` };
@@ -36,13 +38,13 @@ export async function generateMetadata(
 
 export default async function ProjectPage(props: PageProps<"/projects/[slug]">) {
   const { slug } = await props.params;
-  const project = getProject(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
 
-  const more = projects.filter((item) => item.slug !== project.slug).slice(0, 3);
+  const more = (await readProjects()).filter((item) => item.slug !== project.slug).slice(0, 3);
 
   return (
     <div

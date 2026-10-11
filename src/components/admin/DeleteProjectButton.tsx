@@ -1,0 +1,19 @@
+"use client";
+
+/** Submit button that asks for confirmation before the delete action runs. */
+export default function DeleteProjectButton({ title }: { title: string }) {
+  return (
+    <button
+      type="submit"
+      onClick={(event) => {
+        const ok = window.confirm(
+          `Delete "${title}"? This removes it from the site and cannot be undone.`
+        );
+        if (!ok) event.preventDefault();
+      }}
+      className="rounded-full border border-fun-gray-darker px-4 py-1.5 text-xs font-bold text-fun-gray transition-colors hover:border-red-400 hover:text-red-300"
+    >
+      Delete
+    </button>
+  );
+}

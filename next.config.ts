@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Project screenshots are served from Cloudinary.
+    // Project screenshots are served from Cloudinary; thumbnails uploaded
+    // through the admin panel are local files under /public.
     remotePatterns: [
       {
         protocol: "https",
@@ -10,6 +11,12 @@ const nextConfig: NextConfig = {
         pathname: "/dmtirqg8e/image/upload/**",
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      // Thumbnail uploads are capped at 6MB in the action itself.
+      bodySizeLimit: "8mb",
+    },
   },
 };
 
