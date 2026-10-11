@@ -9,13 +9,11 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <div
-      className="m-auto flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-white md:overflow-visible"
+      className="m-auto flex min-h-screen w-full flex-col items-center justify-center overflow-x-clip text-white"
       style={{ maxWidth: "1200px" }}
     >
       <main className="w-full flex-1 p-5 text-center">
-        <div className="z-100">
-          <Navbar />
-        </div>
+        <Navbar />
         <Hero />
         <div className="mt-20 space-y-32">
           <Projects />

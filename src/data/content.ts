@@ -8,7 +8,7 @@ export const profile = {
 };
 
 export const routes = [
-  { title: "Home", path: "/#top" },
+  { title: "Home", path: "/" },
   { title: "Projects", path: "/#projects" },
   { title: "Skills", path: "/#skills" },
   { title: "Contact", path: "/#contact" },
@@ -45,7 +45,7 @@ export const footerColumns = [
   {
     title: "Pages",
     links: [
-      { name: "Home", link: "/#top" },
+      { name: "Home", link: "/" },
       { name: "Projects", link: "/#projects" },
       { name: "Skills", link: "/#skills" },
       { name: "Contact", link: "/#contact" },

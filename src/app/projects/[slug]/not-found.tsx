@@ -5,13 +5,11 @@ import Footer from "@/components/Footer";
 export default function ProjectNotFound() {
   return (
     <div
-      className="m-auto flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-white md:overflow-visible"
+      className="m-auto flex min-h-screen w-full flex-col items-center justify-center overflow-x-clip text-white"
       style={{ maxWidth: "1200px" }}
     >
       <main className="w-full flex-1 p-5">
-        <div className="z-100">
-          <Navbar />
-        </div>
+        <Navbar />
         <div className="flex flex-col items-center py-40 text-center">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-fun-pink">
             404
