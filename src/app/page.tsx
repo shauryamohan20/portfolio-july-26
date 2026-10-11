@@ -16,7 +16,7 @@ export default function Home() {
       <main className="w-full flex-1 p-5 text-center">
         <Navbar />
         <Hero />
-        <div className="mt-20 space-y-32">
+        <div className="mt-8 space-y-20 md:mt-20 md:space-y-32">
           <About />
           <Projects />
           <Skills />

@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProjectCard from "./ProjectCard";
 import type { Project } from "@/lib/project-types";
 
-const PER_PAGE = 6;
+const PER_PAGE_DESKTOP = 6;
+const PER_PAGE_MOBILE = 3;
+const MOBILE_QUERY = "(max-width: 767px)";
 
 /**
  * The project grid, paginated once there are more than six projects.
@@ -13,7 +15,17 @@ const PER_PAGE = 6;
  */
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(PER_PAGE_DESKTOP);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  // Phones show a third of a desktop page, so the list stays short to scroll.
+  useEffect(() => {
+    const query = window.matchMedia(MOBILE_QUERY);
+    const apply = () => setPerPage(query.matches ? PER_PAGE_MOBILE : PER_PAGE_DESKTOP);
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
 
   /**
    * Pages hold different numbers of cards, so switching changes the page
@@ -28,10 +40,11 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
     section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
   }
 
-  const pageCount = Math.max(1, Math.ceil(projects.length / PER_PAGE));
+  const pageCount = Math.max(1, Math.ceil(projects.length / perPage));
+  // Rotating the device can leave the old page number out of range.
   const current = Math.min(page, pageCount);
-  const start = (current - 1) * PER_PAGE;
-  const visible = projects.slice(start, start + PER_PAGE);
+  const start = (current - 1) * perPage;
+  const visible = projects.slice(start, start + perPage);
 
   return (
     <div ref={rootRef}>

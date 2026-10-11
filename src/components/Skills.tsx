@@ -24,7 +24,7 @@ export default function Skills() {
           src="/static/doodles/skills/coding.svg"
         />
       </h2>
-      <div className="relative mx-auto grid w-full max-w-lg grid-cols-3 place-content-center items-center gap-x-8 gap-y-12 sm:grid-cols-6 sm:gap-8 md:mx-0 md:gap-12">
+      <div className="relative mx-auto grid w-full max-w-lg grid-cols-4 place-content-center items-center gap-x-8 gap-y-12 sm:grid-cols-6 sm:gap-8 md:mx-0 md:gap-12">
         {skills.map((item, index) => (
           <div
             title={item.title}

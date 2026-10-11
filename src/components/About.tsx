@@ -24,7 +24,7 @@ export default async function About() {
   return (
     <div
       id="about"
-      className="relative flex scroll-mt-24 flex-col justify-between pt-8 text-left"
+      className="relative flex scroll-mt-24 flex-col justify-between pt-4 text-left md:pt-8"
     >
       <SectionTitle title={about.heading || "A little about me"} />
 

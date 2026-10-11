@@ -7,7 +7,7 @@ export default async function Hero() {
   return (
     <div
       id="top"
-      className="heroElem relative z-1 m-auto flex w-full flex-col items-center justify-center pt-20 pb-40 text-center"
+      className="heroElem relative z-1 m-auto flex w-full flex-col items-center justify-center pt-12 pb-20 text-center md:pt-20 md:pb-40"
       style={{ maxWidth: "1200px" }}
     >
       <p className="mb-5 text-xl">{hero.greeting}</p>
