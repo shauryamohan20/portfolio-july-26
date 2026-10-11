@@ -1,39 +1,5 @@
 [
   {
-    "id": "1",
-    "slug": "tesoro",
-    "title": "Tesoro",
-    "category": "Web Development",
-    "desc": "A card-linked rewards platform for the gaming economy, built for speed with a game-first interface.",
-    "overview": "Tesoro is a rewards platform built for the $125 billion gaming economy, connecting gamers, merchants, and game studios through a seamless card-linked loyalty system. The platform allows players to earn real rewards simply by spending on their everyday purchases, while merchants gain access to a highly engaged gaming audience. Studios benefit from deeper player retention through integrated incentive mechanics. Powered by Visa and Mastercard infrastructure, Tesoro bridges the gap between the physical retail world and digital gaming ecosystems, creating a frictionless rewards experience at scale.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1778286326/Tesoro-_-The-Rewards-Platform-Powering-the-125-Billion-Gaming-Economy-05-09-2026_05_55_AM_zpm5tw.png",
-    "imgAlt": "Tesoro website homepage",
-    "link": "https://www.tesoroxp.com/about",
-    "tags": [
-      "Webflow",
-      "JavaScript",
-      "Fintech"
-    ],
-    "stack": [
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      },
-      {
-        "name": "Webflow",
-        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
-      }
-    ]
-  },
-  {
     "id": "a925efd9-89c5-4825-ab85-81b7a4ce77d6",
     "slug": "bezika",
     "title": "Bezika",
@@ -67,6 +33,40 @@
       {
         "name": "Liquid",
         "icon": "https://marketplace.visualstudio.com/items?itemName=sissel.shopify-liquid"
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "slug": "tesoro",
+    "title": "Tesoro",
+    "category": "Web Development",
+    "desc": "A card-linked rewards platform for the gaming economy, built for speed with a game-first interface.",
+    "overview": "Tesoro is a rewards platform built for the $125 billion gaming economy, connecting gamers, merchants, and game studios through a seamless card-linked loyalty system. The platform allows players to earn real rewards simply by spending on their everyday purchases, while merchants gain access to a highly engaged gaming audience. Studios benefit from deeper player retention through integrated incentive mechanics. Powered by Visa and Mastercard infrastructure, Tesoro bridges the gap between the physical retail world and digital gaming ecosystems, creating a frictionless rewards experience at scale.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1778286326/Tesoro-_-The-Rewards-Platform-Powering-the-125-Billion-Gaming-Economy-05-09-2026_05_55_AM_zpm5tw.png",
+    "imgAlt": "Tesoro website homepage",
+    "link": "https://www.tesoroxp.com/about",
+    "tags": [
+      "Webflow",
+      "JavaScript",
+      "Fintech"
+    ],
+    "stack": [
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
+      },
+      {
+        "name": "Webflow",
+        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
       }
     ]
   },
