@@ -152,7 +152,7 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
         <section className="mt-24 border-t border-fun-pink-dark pt-12">
           <h2 className="text-2xl font-bold">More projects</h2>
-          <div className="mt-10 grid grid-cols-1 items-start gap-12 md:grid-cols-3 md:gap-5">
+          <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-5">
             {more.map((item) => (
               <ProjectCard key={item.id} project={item} />
             ))}

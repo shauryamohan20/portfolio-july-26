@@ -6,7 +6,7 @@ export default function ProjectCard({ project }: { project: Project }) {
   const detail = `/projects/${project.slug}`;
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col justify-center">
+    <div className="mx-auto flex h-full max-w-sm flex-col">
       <Link
         href={detail}
         aria-label={`${project.title} — case study`}
@@ -22,7 +22,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           />
         </div>
       </Link>
-      <div className="mt-5 w-full">
+      <div className="mt-5 flex w-full flex-1 flex-col">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-lg font-bold">
             <Link href={detail} className="transition-colors hover:text-fun-pink">
@@ -51,10 +51,10 @@ export default function ProjectCard({ project }: { project: Project }) {
             </li>
           ))}
         </ul>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
           <Link
             href={detail}
-            className="inline-flex items-center gap-1.5 rounded-full bg-fun-pink px-3 py-1.5 text-xs font-bold text-bg transition-opacity hover:opacity-80"
+            className="inline-flex items-center gap-1.5 rounded-full border border-transparent bg-fun-pink px-3 py-1.5 text-xs font-bold text-bg transition-opacity hover:opacity-80"
           >
             Case Study
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
