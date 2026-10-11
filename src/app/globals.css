@@ -19,6 +19,14 @@
   --font-mono: var(--font-dm-mono), "DM Mono", monospace;
 }
 
+/* Contain sideways overflow at the viewport, so the hero zoom-in animation
+   can span the whole window instead of being cut off at the content column.
+   Uses clip, not hidden: hidden would make this a scroll container and break
+   the sticky header. */
+html {
+  overflow-x: clip;
+}
+
 body {
   width: 100%;
   min-height: 100vh;
