@@ -31,7 +31,7 @@ export async function generateMetadata(
       title: `${project.title} — ${profile.name}`,
       description: project.desc,
       type: "article",
-      images: [{ url: project.img, alt: project.imgAlt }],
+      images: [{ url: project.heroImg || project.img, alt: project.heroImgAlt || project.imgAlt }],
     },
   };
 }
@@ -108,8 +108,8 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
           {/* Screenshots are 1920x911; keep that ratio so nothing is cropped. */}
           <div className="relative mt-12 aspect-[1920/911] w-full overflow-hidden rounded-xl border border-fun-gray-darker bg-fun-pink-dark">
             <Image
-              src={project.img}
-              alt={project.imgAlt}
+              src={project.heroImg || project.img}
+              alt={project.heroImgAlt || project.imgAlt}
               fill
               sizes="(max-width: 1200px) 100vw, 1160px"
               loading="eager"
@@ -120,8 +120,15 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
           <div className="mt-16 grid gap-12 md:grid-cols-3">
             <div className="md:col-span-2">
-              <h2 className="text-2xl font-bold">About the project</h2>
-              <p className="mt-4 leading-relaxed text-fun-gray-light">{project.overview}</p>
+              {/* No printed heading: the body carries its own title. */}
+              {project.overviewHtml ? (
+                <div
+                  className="richText"
+                  dangerouslySetInnerHTML={{ __html: project.overviewHtml }}
+                />
+              ) : (
+                <p className="leading-relaxed text-fun-gray-light">{project.overview}</p>
+              )}
             </div>
 
             <aside>

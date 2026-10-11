@@ -3,6 +3,8 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { saveProject, type FormState } from "@/app/admin/actions";
+import RichTextEditor from "./RichTextEditor";
+import { ACCEPT_ATTRIBUTE } from "@/lib/uploads";
 import {
   TECH_PRESETS,
   slugify,
@@ -48,16 +50,26 @@ export default function ProjectForm({ project }: { project: Project }) {
     project.img.startsWith("/static/projects/") ? "" : project.img
   );
   const [uploadName, setUploadName] = useState("");
+  const heroSaved = project.heroImg ?? "";
+  const [heroUrl, setHeroUrl] = useState(
+    heroSaved.startsWith("/static/projects/") ? "" : heroSaved
+  );
+  const [heroUploadName, setHeroUploadName] = useState("");
+  const [removeHero, setRemoveHero] = useState(false);
   const [custom, setCustom] = useState<TechIcon[]>(
     project.stack.filter((item) => !presetNames.has(item.name))
   );
 
   const selectedPresets = new Set(project.stack.map((item) => item.name));
   const preview = uploadName ? "" : imgUrl || project.img;
+  const heroPreview = removeHero || heroUploadName ? "" : heroUrl || heroSaved;
+  // What the detail page will actually show once saved.
+  const heroEffective = heroPreview || preview;
 
   return (
     <form action={formAction} className="space-y-8">
       <input type="hidden" name="id" value={project.id} />
+      <input type="hidden" name="removeHeroImg" value={removeHero ? "1" : ""} />
 
       {state.message && !state.ok && (
         <p
@@ -124,14 +136,23 @@ export default function ProjectForm({ project }: { project: Project }) {
       </Field>
 
       <Field
-        title="About the project"
-        note="The long write-up on the detail page. Blank falls back to the short description."
+        title="Case study body"
+        note="Shown on the detail page. Add your own heading at the top — the page no longer prints one."
       >
-        <textarea className={field} name="overview" rows={8} defaultValue={project.overview} />
+        <RichTextEditor
+          name="overviewHtml"
+          defaultValue={project.overviewHtml || ""}
+          placeholder="Write, or paste formatted text from your source…"
+        />
       </Field>
 
       <section className="rounded-xl border border-fun-gray-darker p-5">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-fun-gray">Thumbnail</h2>
+        <h2 className="text-sm font-bold uppercase tracking-wider text-fun-gray">
+          Card thumbnail
+        </h2>
+        <p className="mt-1 text-xs text-fun-gray-medium">
+          Shown in the projects grid, cropped to 16:10.
+        </p>
         <div className="mt-4 grid gap-6 md:grid-cols-[1fr_320px]">
           <div className="space-y-4">
             <Field title="Upload an image" note="PNG, JPG, WEBP, AVIF, GIF or SVG, up to 6MB.">
@@ -139,7 +160,7 @@ export default function ProjectForm({ project }: { project: Project }) {
                 className="w-full text-sm text-fun-gray-light file:mr-3 file:rounded-full file:border-0 file:bg-fun-pink file:px-4 file:py-2 file:text-xs file:font-bold file:text-bg"
                 type="file"
                 name="imgFile"
-                accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/svg+xml"
+                accept={ACCEPT_ATTRIBUTE}
                 onChange={(event) => setUploadName(event.target.files?.[0]?.name ?? "")}
               />
             </Field>
@@ -178,6 +199,84 @@ export default function ProjectForm({ project }: { project: Project }) {
                 <p className="text-xs text-fun-gray-medium">No thumbnail yet</p>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-fun-gray-darker p-5">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-fun-gray">
+          Detail page image
+        </h2>
+        <p className="mt-1 text-xs text-fun-gray-medium">
+          The wide image at the top of the case study. Leave empty to reuse the
+          thumbnail. A wide shot around 1920×900 fills it exactly.
+        </p>
+        <div className="mt-4 grid gap-6 md:grid-cols-[1fr_320px]">
+          <div className="space-y-4">
+            <Field title="Upload an image" note="PNG, JPG, WEBP, AVIF, GIF or SVG, up to 6MB.">
+              <input
+                className="w-full text-sm text-fun-gray-light file:mr-3 file:rounded-full file:border-0 file:bg-fun-pink file:px-4 file:py-2 file:text-xs file:font-bold file:text-bg"
+                type="file"
+                name="heroImgFile"
+                accept={ACCEPT_ATTRIBUTE}
+                onChange={(event) => {
+                  setHeroUploadName(event.target.files?.[0]?.name ?? "");
+                  setRemoveHero(false);
+                }}
+              />
+            </Field>
+
+            <Field title="…or paste an image URL">
+              <input
+                className={field}
+                name="heroImg"
+                value={heroUrl}
+                placeholder="https://…"
+                onChange={(event) => {
+                  setHeroUrl(event.target.value);
+                  setRemoveHero(false);
+                }}
+              />
+            </Field>
+
+            <Field title="Image alt text" note="Leave empty to reuse the thumbnail's alt text.">
+              <input className={field} name="heroImgAlt" defaultValue={project.heroImgAlt ?? ""} />
+            </Field>
+
+            {(heroPreview || heroUploadName) && (
+              <label className="flex items-center gap-2 text-xs text-fun-gray">
+                <input
+                  type="checkbox"
+                  className="accent-fun-pink"
+                  checked={removeHero}
+                  onChange={(event) => setRemoveHero(event.target.checked)}
+                />
+                Remove it and use the thumbnail instead
+              </label>
+            )}
+          </div>
+
+          <div>
+            <span className={label}>Detail page shows</span>
+            <div className="mt-2 flex aspect-[1920/911] items-center justify-center overflow-hidden rounded-lg border border-fun-gray-darker bg-fun-pink-dark">
+              {heroUploadName ? (
+                <p className="px-4 text-center text-xs text-fun-gray-light">
+                  New upload ready:
+                  <br />
+                  <span className="font-mono">{heroUploadName}</span>
+                </p>
+              ) : heroEffective ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={heroEffective} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <p className="text-xs text-fun-gray-medium">Nothing to show yet</p>
+              )}
+            </div>
+            {!heroPreview && !heroUploadName && preview && (
+              <p className="mt-2 text-center text-xs text-fun-gray-medium">
+                Using the thumbnail
+              </p>
+            )}
           </div>
         </div>
       </section>

@@ -14,6 +14,7 @@ import {
 import type { Project, TechIcon } from "@/lib/project-types";
 import { slugify } from "@/lib/project-types";
 import { prepareUpload } from "@/lib/uploads";
+import { richTextToPlain, sanitizeRichText } from "@/lib/rich-text";
 import {
   UPLOAD_PUBLIC_DIR,
   UPLOAD_REPO_DIR,
@@ -81,7 +82,7 @@ function parseStack(formData: FormData): TechIcon[] {
 async function projectFromForm(
   formData: FormData,
   existing: Project | undefined
-): Promise<{ fields: Omit<Project, "id">; upload?: PendingUpload }> {
+): Promise<{ fields: Omit<Project, "id">; uploads: PendingUpload[] }> {
   const title = text(formData, "title");
   if (!title) throw new Error("Title is required.");
 
@@ -91,34 +92,64 @@ async function projectFromForm(
   const desc = text(formData, "desc");
   if (!desc) throw new Error("Short description is required.");
 
-  const file = formData.get("imgFile");
-  const imgUrl = text(formData, "img");
-  let img = existing?.img ?? "";
-  let upload: PendingUpload | undefined;
+  const uploads: PendingUpload[] = [];
 
-  if (file instanceof File && file.size > 0) {
-    upload = await prepareUpload(file, {
-      nameHint: slug,
-      repoDir: UPLOAD_REPO_DIR,
-      publicDir: UPLOAD_PUBLIC_DIR,
-    });
-    img = upload.publicPath;
-  } else if (imgUrl) {
-    img = imgUrl;
+  /** Pick an image: a new upload wins, then a pasted URL, then what is saved. */
+  async function resolveImage(
+    fileField: string,
+    urlField: string,
+    removeField: string,
+    current: string,
+    nameHint: string
+  ) {
+    const file = formData.get(fileField);
+    const url = text(formData, urlField);
+
+    if (file instanceof File && file.size > 0) {
+      const upload = await prepareUpload(file, {
+        nameHint,
+        repoDir: UPLOAD_REPO_DIR,
+        publicDir: UPLOAD_PUBLIC_DIR,
+      });
+      uploads.push(upload);
+      return upload.publicPath;
+    }
+    if (url) return url;
+    if (text(formData, removeField) === "1") return "";
+    return current;
   }
+
+  const img = await resolveImage("imgFile", "img", "removeImg", existing?.img ?? "", slug);
+  const heroImg = await resolveImage(
+    "heroImgFile",
+    "heroImg",
+    "removeHeroImg",
+    existing?.heroImg ?? "",
+    `${slug}-hero`
+  );
 
   if (!img) throw new Error("A thumbnail is required — upload a file or paste a URL.");
 
+  // The editor posts markup; keep a plain-text copy for metadata and fallbacks.
+  const rawHtml = formData.get("overviewHtml");
+  const overviewHtml = sanitizeRichText(typeof rawHtml === "string" ? rawHtml : "");
+  const overviewPlain = overviewHtml
+    ? richTextToPlain(overviewHtml)
+    : text(formData, "overview");
+
   return {
-    upload,
+    uploads,
     fields: {
       slug,
       title,
       category: text(formData, "category") || "Web Development",
       desc,
-      overview: text(formData, "overview") || desc,
+      overview: overviewPlain || desc,
+      overviewHtml: overviewHtml || undefined,
       img,
       imgAlt: text(formData, "imgAlt") || `${title} website screenshot`,
+      heroImg: heroImg || undefined,
+      heroImgAlt: text(formData, "heroImgAlt") || undefined,
       link: text(formData, "link") || undefined,
       github: text(formData, "github") || undefined,
       status: text(formData, "status") || undefined,
@@ -145,7 +176,7 @@ export async function saveProject(
       return { ok: false, message: "That project no longer exists." };
     }
 
-    const { fields, upload } = await projectFromForm(formData, existing);
+    const { fields, uploads } = await projectFromForm(formData, existing);
     slug = fields.slug;
 
     const slugTaken = projects.some(
@@ -165,7 +196,7 @@ export async function saveProject(
       : [...projects, { id: newProjectId(), ...fields }];
 
     await persistProjects(next, {
-      uploads: upload ? [upload] : [],
+      uploads,
       message: `${existing ? "Update" : "Add"} project: ${fields.title}`,
     });
   } catch (error) {

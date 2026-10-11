@@ -15,11 +15,16 @@ export type Project = {
   category: string;
   /** Short blurb shown on the project card. */
   desc: string;
-  /** Long-form copy shown on the detail page. */
+  /** Long-form copy shown on the detail page, as plain text. */
   overview: string;
-  /** Screenshot used as the card thumbnail and the detail page hero. */
+  /** Same copy as sanitized rich text, when written in the editor. */
+  overviewHtml?: string;
+  /** Screenshot used as the card thumbnail, and as the hero when no heroImg is set. */
   img: string;
   imgAlt: string;
+  /** Optional separate, usually wider image for the top of the detail page. */
+  heroImg?: string;
+  heroImgAlt?: string;
   /** Live site, when the project has one. */
   link?: string;
   github?: string;
@@ -46,6 +51,9 @@ export const TECH_PRESETS: TechIcon[] = [
   { name: "Flask", icon: "https://cdn.simpleicons.org/flask/ffffff" },
   { name: "Webflow", icon: "https://cdn.simpleicons.org/webflow/4353FF" },
   { name: "Shopify", icon: "https://cdn.simpleicons.org/shopify/96BF48" },
+  // Shopify's templating language; neither Simple Icons nor Devicon ships a
+  // Liquid mark, so this is a local droplet icon.
+  { name: "Liquid", icon: "/static/icons/liquid.svg" },
   { name: "WordPress", icon: "https://cdn.simpleicons.org/wordpress/ffffff" },
   { name: "Figma", icon: "https://cdn.simpleicons.org/figma/F24E1E" },
   { name: "Git", icon: "https://cdn.simpleicons.org/git/F05032" },
@@ -70,8 +78,11 @@ export function emptyProject(): Project {
     category: "Web Development",
     desc: "",
     overview: "",
+    overviewHtml: "",
     img: "",
     imgAlt: "",
+    heroImg: "",
+    heroImgAlt: "",
     link: "",
     github: "",
     status: "",

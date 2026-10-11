@@ -121,3 +121,105 @@ body::-webkit-scrollbar-thumb {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Pasted case-study copy. The source's structure is kept; its colours and
+   fonts are stripped on save, so sizing comes from here. */
+.richText {
+  color: var(--color-fun-gray-light);
+  line-height: 1.7;
+}
+
+.richText > *:first-child {
+  margin-top: 0;
+}
+
+.richText h1,
+.richText h2,
+.richText h3,
+.richText h4,
+.richText h5,
+.richText h6 {
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 2rem 0 0.75rem;
+}
+
+.richText h1 { font-size: 2rem; }
+.richText h2 { font-size: 1.5rem; }
+.richText h3 { font-size: 1.25rem; }
+.richText h4 { font-size: 1.125rem; }
+.richText h5,
+.richText h6 { font-size: 1rem; }
+
+.richText p { margin: 0 0 1rem; }
+
+.richText strong,
+.richText b { color: #ffffff; font-weight: 700; }
+
+.richText em { font-style: italic; }
+
+.richText a {
+  color: var(--color-fun-pink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.richText ul,
+.richText ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.richText ul { list-style: disc; }
+.richText ol { list-style: decimal; }
+.richText li { margin: 0.35rem 0; }
+.richText li::marker { color: var(--color-fun-pink); }
+
+.richText blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 3px solid var(--color-fun-pink);
+  color: var(--color-fun-gray-light);
+  font-style: italic;
+}
+
+.richText code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-fun-pink-dark);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.35rem;
+}
+
+.richText pre {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: var(--color-fun-pink-darker);
+}
+
+.richText pre code { background: none; padding: 0; }
+
+.richText hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-fun-pink-dark);
+}
+
+.richText table {
+  width: 100%;
+  margin: 0 0 1rem;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.richText th,
+.richText td {
+  border: 1px solid var(--color-fun-pink-dark);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.richText th { color: #ffffff; font-weight: 700; }
