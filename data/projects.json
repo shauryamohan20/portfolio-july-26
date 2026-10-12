@@ -310,40 +310,6 @@
     ]
   },
   {
-    "id": "6",
-    "slug": "innovative-dental",
-    "title": "Innovative Dental Springfield",
-    "category": "Web Development",
-    "desc": "A calm, accessible site for a premium dental practice, built to drive bookings and patient confidence.",
-    "overview": "Innovative Dental is a premium dental practice based in Springfield, Missouri, renowned for delivering a spa-like patient experience alongside world-class clinical care. The practice specialises in dental implants, orthodontics, and cosmetic dentistry, combining cutting-edge technology with a warm, welcoming environment that puts patient comfort first. The website was designed to communicate trust, expertise, and approachability, using clean white aesthetics and professional photography to ease patient anxiety and guide visitors through available treatments. Appointment booking and patient education are centralised for a seamless digital-to-clinic journey.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737326/Innovative-Dental-Dental-Implants-Orthodontics-03-29-2026_04_04_AM_pmzcjq.png",
-    "imgAlt": "Innovative Dental Springfield website homepage",
-    "link": "https://www.idspringfield.com/",
-    "tags": [
-      "Webflow",
-      "Web Design",
-      "Healthcare"
-    ],
-    "stack": [
-      {
-        "name": "Webflow",
-        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
-      },
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      }
-    ]
-  },
-  {
     "id": "a4188b38-4352-41cd-8514-dbfcfa001310",
     "slug": "maison-de-marie",
     "title": "Maison de Marie",
@@ -387,6 +353,40 @@
       {
         "name": "Git",
         "icon": "https://cdn.simpleicons.org/git/F05032"
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "innovative-dental",
+    "title": "Innovative Dental Springfield",
+    "category": "Web Development",
+    "desc": "A calm, accessible site for a premium dental practice, built to drive bookings and patient confidence.",
+    "overview": "Innovative Dental is a premium dental practice based in Springfield, Missouri, renowned for delivering a spa-like patient experience alongside world-class clinical care. The practice specialises in dental implants, orthodontics, and cosmetic dentistry, combining cutting-edge technology with a warm, welcoming environment that puts patient comfort first. The website was designed to communicate trust, expertise, and approachability, using clean white aesthetics and professional photography to ease patient anxiety and guide visitors through available treatments. Appointment booking and patient education are centralised for a seamless digital-to-clinic journey.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774737326/Innovative-Dental-Dental-Implants-Orthodontics-03-29-2026_04_04_AM_pmzcjq.png",
+    "imgAlt": "Innovative Dental Springfield website homepage",
+    "link": "https://www.idspringfield.com/",
+    "tags": [
+      "Webflow",
+      "Web Design",
+      "Healthcare"
+    ],
+    "stack": [
+      {
+        "name": "Webflow",
+        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
+      },
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
       }
     ]
   }
