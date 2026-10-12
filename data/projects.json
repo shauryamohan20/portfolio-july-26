@@ -276,40 +276,6 @@
     ]
   },
   {
-    "id": "5",
-    "slug": "avantgarde",
-    "title": "Avantgarde Artist Agency",
-    "category": "Web Development",
-    "desc": "A booking and roster site for a London electronic music agency, built around bold, editorial layouts.",
-    "overview": "Avantgarde Artist Agency is a London-based electronic music booking and management agency with over 20 years of experience in the industry. Representing more than 20 internationally acclaimed artists, the agency specialises in connecting world-class electronic music talent with promoters, festivals, and venues across the globe. The website reflects the agency's bold artistic identity, featuring a dark, immersive design with dynamic typography and a refined visual language that speaks directly to the underground music scene. The site serves as a central hub for artist discovery, tour booking, and brand communication.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Avantgarde-Artists-Agency-03-29-2026_03_42_AM_l8ioyg.png",
-    "imgAlt": "Avantgarde Artist Agency website homepage",
-    "link": "https://www.avantgardeartistsagency.com/",
-    "tags": [
-      "Webflow",
-      "Web Design",
-      "Music"
-    ],
-    "stack": [
-      {
-        "name": "Webflow",
-        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
-      },
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      }
-    ]
-  },
-  {
     "id": "a4188b38-4352-41cd-8514-dbfcfa001310",
     "slug": "maison-de-marie",
     "title": "Maison de Marie",
@@ -353,6 +319,40 @@
       {
         "name": "Git",
         "icon": "https://cdn.simpleicons.org/git/F05032"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "avantgarde",
+    "title": "Avantgarde Artist Agency",
+    "category": "Web Development",
+    "desc": "A booking and roster site for a London electronic music agency, built around bold, editorial layouts.",
+    "overview": "Avantgarde Artist Agency is a London-based electronic music booking and management agency with over 20 years of experience in the industry. Representing more than 20 internationally acclaimed artists, the agency specialises in connecting world-class electronic music talent with promoters, festivals, and venues across the globe. The website reflects the agency's bold artistic identity, featuring a dark, immersive design with dynamic typography and a refined visual language that speaks directly to the underground music scene. The site serves as a central hub for artist discovery, tour booking, and brand communication.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Avantgarde-Artists-Agency-03-29-2026_03_42_AM_l8ioyg.png",
+    "imgAlt": "Avantgarde Artist Agency website homepage",
+    "link": "https://www.avantgardeartistsagency.com/",
+    "tags": [
+      "Webflow",
+      "Web Design",
+      "Music"
+    ],
+    "stack": [
+      {
+        "name": "Webflow",
+        "icon": "https://cdn.simpleicons.org/webflow/4353FF"
+      },
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
       }
     ]
   },
