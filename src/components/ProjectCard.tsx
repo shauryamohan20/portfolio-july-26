@@ -10,7 +10,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       <Link
         href={detail}
         aria-label={`${project.title} — case study`}
-        className="group relative block w-full overflow-hidden rounded-xl border border-fun-gray p-2 transition hover:-translate-y-2 hover:border-fun-pink"
+        className="relative block w-full overflow-hidden rounded-xl border border-fun-gray p-2 transition duration-200 hover:-translate-y-1 hover:border-fun-pink"
       >
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md bg-fun-pink-dark">
           <Image
@@ -18,7 +18,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             alt={project.imgAlt}
             fill
             sizes="(max-width: 768px) 90vw, 33vw"
-            className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            className="object-cover object-top"
           />
         </div>
       </Link>
