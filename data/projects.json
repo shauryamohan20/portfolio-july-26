@@ -242,40 +242,6 @@
     "heroImg": "/static/projects/black-fridye-hero-1791810816452.png"
   },
   {
-    "id": "3",
-    "slug": "cord-studio",
-    "title": "Cord Studio",
-    "category": "Web Development",
-    "desc": "An e-commerce storefront for contemporary clothing and premium leather goods, with bespoke monogramming.",
-    "overview": "Cord Studio is an Indian contemporary fashion brand offering a curated range of clothing and premium leather goods. The brand blends modern design sensibilities with artisanal craftsmanship, releasing limited seasonal collections that celebrate quality and individuality. A standout feature of the brand is its personalised monogramming service, allowing customers to add a bespoke touch to their leather pieces. The e-commerce experience is crafted to reflect the brand's refined aesthetic, with clean layouts, editorial photography, and an intuitive shopping journey that makes luxury feel accessible and personal.",
-    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Contemporary-Clothing-Premium-Leather-Goods-_-Cord-Studio-03-29-2026_03_43_AM_lr1lf8.png",
-    "imgAlt": "Cord Studio storefront homepage",
-    "link": "https://www.cordstudio.in/",
-    "tags": [
-      "Shopify",
-      "E-commerce",
-      "Liquid"
-    ],
-    "stack": [
-      {
-        "name": "Shopify",
-        "icon": "https://cdn.simpleicons.org/shopify/96BF48"
-      },
-      {
-        "name": "HTML5",
-        "icon": "https://cdn.simpleicons.org/html5/E34F26"
-      },
-      {
-        "name": "CSS3",
-        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-      },
-      {
-        "name": "JavaScript",
-        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
-      }
-    ]
-  },
-  {
     "id": "a4188b38-4352-41cd-8514-dbfcfa001310",
     "slug": "maison-de-marie",
     "title": "Maison de Marie",
@@ -319,6 +285,40 @@
       {
         "name": "Git",
         "icon": "https://cdn.simpleicons.org/git/F05032"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "cord-studio",
+    "title": "Cord Studio",
+    "category": "Web Development",
+    "desc": "An e-commerce storefront for contemporary clothing and premium leather goods, with bespoke monogramming.",
+    "overview": "Cord Studio is an Indian contemporary fashion brand offering a curated range of clothing and premium leather goods. The brand blends modern design sensibilities with artisanal craftsmanship, releasing limited seasonal collections that celebrate quality and individuality. A standout feature of the brand is its personalised monogramming service, allowing customers to add a bespoke touch to their leather pieces. The e-commerce experience is crafted to reflect the brand's refined aesthetic, with clean layouts, editorial photography, and an intuitive shopping journey that makes luxury feel accessible and personal.",
+    "img": "https://res.cloudinary.com/dmtirqg8e/image/upload/v1774736319/Contemporary-Clothing-Premium-Leather-Goods-_-Cord-Studio-03-29-2026_03_43_AM_lr1lf8.png",
+    "imgAlt": "Cord Studio storefront homepage",
+    "link": "https://www.cordstudio.in/",
+    "tags": [
+      "Shopify",
+      "E-commerce",
+      "Liquid"
+    ],
+    "stack": [
+      {
+        "name": "Shopify",
+        "icon": "https://cdn.simpleicons.org/shopify/96BF48"
+      },
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.simpleicons.org/html5/E34F26"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.simpleicons.org/javascript/F7DF1E"
       }
     ]
   },
