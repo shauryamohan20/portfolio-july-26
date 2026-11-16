@@ -6,6 +6,14 @@
 export function createReader({ onClose }) {
   const dialog = document.getElementById('reader');
   const body = dialog.querySelector('.reader-body');
+  const hint = dialog.querySelector('.reader-hint');
+  // Show a 'scroll for more' nudge while there is more content below the fold.
+  const updateHint = () => {
+    if (!hint) return;
+    const more = body.scrollHeight - body.clientHeight - body.scrollTop > 24;
+    hint.hidden = !(more && body.scrollTop < 40);
+  };
+  body.addEventListener('scroll', updateHint, { passive: true });
 
   const cloneClean = (el) => {
     const c = el.cloneNode(true);
@@ -74,6 +82,9 @@ export function createReader({ onClose }) {
       if (h) h.id = 'reader-title';
       if (!dialog.open) dialog.showModal();
       body.scrollTop = 0;
+      requestAnimationFrame(updateHint);
+      setTimeout(updateHint, 400); // again after images load
+      body.querySelectorAll('img').forEach((img) => img.addEventListener('load', updateHint, { once: true }));
       dialog.querySelector('.reader-close').focus();
     },
     close() { if (dialog.open) dialog.close(); },

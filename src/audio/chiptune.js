@@ -38,6 +38,7 @@ export class Chiptune {
     this.ctx = null;
     this.zone = 'intro';
     this.lead = SONG.lead.trim().split(/\s+/);
+    if (typeof document !== 'undefined') this.watchVisibility();
   }
 
   ensure() {
@@ -72,7 +73,30 @@ export class Chiptune {
     return this.waves[duty];
   }
 
+  /** Pause music while the page is hidden (tab switched, app minimized, phone locked). */
+  watchVisibility() {
+    const onHide = () => {
+      if (this.muted || !this.ctx || this.bgPaused) return;
+      this.bgPaused = true;
+      this.stop();
+      this.master.gain.setValueAtTime(0, this.ctx.currentTime);
+      this.ctx.suspend();
+    };
+    const onShow = () => {
+      if (!this.bgPaused) return;
+      this.bgPaused = false;
+      if (this.muted) return;
+      this.ctx.resume();
+      this.master.gain.setTargetAtTime(1, this.ctx.currentTime, 0.1);
+      this.start();
+    };
+    document.addEventListener('visibilitychange', () => (document.hidden ? onHide() : onShow()));
+    window.addEventListener('pagehide', onHide);
+    window.addEventListener('pageshow', () => !document.hidden && onShow());
+  }
+
   setMuted(m) {
+    this.bgPaused = false;
     this.muted = m;
     if (!m) {
       this.ensure(); // must run inside a click/keypress handler

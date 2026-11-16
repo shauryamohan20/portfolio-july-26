@@ -1,8 +1,14 @@
 import './style.css';
+import { inject } from '@vercel/analytics';
 import { Chiptune } from './audio/chiptune.js';
 import { createHud } from './ui/hud.js';
 import { createReader } from './ui/reader.js';
 import { setupReveals } from './ui/reveal.js';
+import { setupStage } from './ui/stage.js';
+import { site } from './content.js';
+
+// Vercel Web Analytics: counts visitors and page views once deployed on Vercel.
+inject();
 
 const root = document.documentElement;
 const audio = new Chiptune();
@@ -17,6 +23,20 @@ const store = {
 
 const hud = createHud({ audio, onAction });
 const reader = createReader({ onClose: () => game && (game.paused = false) });
+
+// End-of-run panel: contact me, or run again.
+const finish = document.getElementById('finish');
+const finishEmail = document.getElementById('finish-email');
+finishEmail.href = `mailto:${site.email}?subject=Shopify%20project`;
+finish.addEventListener('close', () => game && (game.paused = false));
+finish.addEventListener('click', (e) => { if (e.target === finish) finish.close(); });
+function showFinish(coins) {
+  game.paused = true;
+  document.getElementById('finish-coins').textContent = String(coins);
+  audio.sfx('coin');
+  finish.showModal();
+  finishEmail.focus();
+}
 
 // e is the event, or the zone index for 'travel'.
 function onAction(action, e) {
@@ -44,6 +64,13 @@ function onAction(action, e) {
     case 'close-reader':
       reader.close();
       break;
+    case 'close-finish':
+      finish.close();
+      break;
+    case 'run-again':
+      finish.close();
+      game?.restart();
+      break;
     case 'start-sound':
     case 'start-muted':
       e?.preventDefault();
@@ -61,6 +88,7 @@ function setMode(mode, { focus = false } = {}) {
     root.classList.add('plain');
     game?.pause();
     reader.close();
+    if (finish.open) finish.close();
     if (!audio.muted) audio.setMuted(true);
     hud.syncMute();
     if (focus) document.getElementById('main').focus({ preventScroll: true });
@@ -99,6 +127,7 @@ async function boot() {
         canvas: document.getElementById('world'),
         audio,
         hud,
+        onFinish: showFinish,
         onRead: (station) => {
           game.paused = true;
           reader.open(station.target);
@@ -143,5 +172,6 @@ function showHelp() {
 }
 
 setupReveals();
+setupStage();
 
 if (root.classList.contains('game')) boot();

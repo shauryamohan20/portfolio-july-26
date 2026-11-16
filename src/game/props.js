@@ -139,7 +139,7 @@ export const PROPS = {
   },
 
   welcome(ctx) {
-    const x = ctx.x0 + 22;
+    const x = ctx.x0 + Math.round(ctx.L * 0.34);
     signboard(ctx, x, -6, 'HELLO', ctx.th.accent);
     ctx.station({ x, label: 'Welcome', target: { type: 'section', id: ctx.th.id } });
   },
@@ -199,7 +199,7 @@ export const PROPS = {
   // ---- Services: one monument per Shopify service ----
   bagTower(ctx) {
     const { b, x0 } = ctx;
-    const x = x0 + 14, z = -10;
+    const x = x0 + Math.round(ctx.L * 0.22), z = -10;
     ctx.flat(x, z + 2, 6, 5);
     ctx.reserve(x, z, 6);
     b.box(x - 3.5, -2, z, 7, 10, 3, '#95bf47');
@@ -212,7 +212,7 @@ export const PROPS = {
 
   liquidTower(ctx) {
     const { b, x0 } = ctx;
-    const x = x0 + 32, z = -10;
+    const x = x0 + Math.round(ctx.L * 0.5), z = -10;
     ctx.flat(x, z + 2, 6, 5);
     ctx.reserve(x, z, 6);
     b.box(x - 3, -2, z - 1.5, 6, 3, 6, '#3a3f55'); // pedestal
@@ -230,7 +230,7 @@ export const PROPS = {
 
   boltTower(ctx) {
     const { b, x0 } = ctx;
-    const x = x0 + 50, z = -10;
+    const x = x0 + Math.round(ctx.L * 0.78), z = -10;
     ctx.flat(x, z + 2, 6, 5);
     ctx.reserve(x, z, 6);
     b.box(x - 3, -2, z - 1.5, 6, 3, 6, '#3a3f55');
@@ -348,14 +348,49 @@ export const PROPS = {
     }
   },
 
-  mailbox(ctx) {
+  // A big lit "HIRE ME" sign with a giant mailbox and flying letters: impossible to miss.
+  hireMe(ctx) {
     const { b, cx } = ctx;
-    const x = cx - 8, z = -4;
-    ctx.flat(x, z, 3, 2);
-    b.box(x + 0.35, 0, z + 0.35, 0.3, 1.6, 0.3, '#7a4d24');
-    b.box(x - 0.2, 1.6, z - 0.4, 1.4, 1.2, 1.8, '#e04040');
-    b.box(x + 1.2, 1.8, z + 0.7, 0.15, 1.0, 0.2, '#ffd23f');
-    ctx.station({ x: x + 0.5, label: 'Contact', target: { type: 'section', id: ctx.th.id } });
+    const x = cx, z = -9, w = 19, h = 8.5, y0 = 2;
+    ctx.flat(x, z + 3, w / 2 + 3, 6);
+    ctx.reserve(x, z, w / 2 + 2);
+    // posts and board
+    for (const px of [x - w / 2 + 1.5, x + w / 2 - 2]) b.box(px, -1, z, 0.6, y0 + 1, 0.6, '#3a3f55');
+    b.box(x - w / 2, y0, z - 0.3, w, h, 0.6, '#14172a');
+    // marquee bulbs around the edge
+    for (let bx = 0; bx <= w - 0.6; bx += 1.2) {
+      const c = Math.round(bx / 1.2) % 2 ? '#ffffff' : '#ffd23f';
+      b.box(x - w / 2 + bx + 0.1, y0 + 0.15, z + 0.3, 0.4, 0.4, 0.2, c, true);
+      b.box(x - w / 2 + bx + 0.1, y0 + h - 0.55, z + 0.3, 0.4, 0.4, 0.2, c, true);
+    }
+    for (let by = 1.2; by < h - 1; by += 1.2) {
+      const c = Math.round(by / 1.2) % 2 ? '#ffd23f' : '#ffffff';
+      b.box(x - w / 2 + 0.1, y0 + by, z + 0.3, 0.4, 0.4, 0.2, c, true);
+      b.box(x + w / 2 - 0.5, y0 + by, z + 0.3, 0.4, 0.4, 0.2, c, true);
+    }
+    // the words
+    const big = 0.62, tw = textWidth('HIRE ME') * big;
+    voxelText(b, 'HIRE ME', x - tw / 2, y0 + 4.2, z + 0.3, '#ffd23f', { scale: big, depth: 0.3, glow: true });
+    const small = 0.3, sw = textWidth('SAY HELLO') * small;
+    voxelText(b, 'SAY HELLO', x - sw / 2, y0 + 1.6, z + 0.3, '#ffffff', { scale: small, depth: 0.2, glow: true });
+    // a giant red mailbox beside the road
+    const mx = x - w / 2 - 3.5, mz = -5;
+    b.box(mx + 0.9, 0, mz + 1.1, 0.6, 2.6, 0.6, '#5a3a22');
+    b.box(mx, 2.6, mz, 2.4, 2.2, 3, '#e04040');
+    b.box(mx + 0.2, 4.8, mz, 2.0, 0.4, 3, '#e04040');
+    b.box(mx + 0.5, 5.2, mz, 1.4, 0.3, 3, '#e04040');
+    b.box(mx + 0.4, 3.9, mz + 3, 1.6, 0.25, 0.1, '#1d1a24'); // slot
+    b.box(mx + 2.4, 3.2, mz + 1.6, 0.2, 2.6, 0.3, '#ffd23f'); // flag up
+    b.box(mx + 2.4, 5.0, mz + 1.6, 0.2, 0.8, 1.1, '#ffd23f');
+    ctx.reserve(mx + 1, mz + 1.5, 3);
+    // letters flying out toward the sign
+    for (const [ex, ey, ez] of [[mx + 3, 7, mz - 1], [mx + 6, 9.2, mz - 3], [mx + 9.5, 11.2, mz - 4.5]]) {
+      b.box(ex, ey, ez, 1.6, 1.0, 0.15, '#ffffff');
+      b.box(ex + 0.2, ey + 0.5, ez + 0.15, 0.6, 0.15, 0.05, '#ff5c8a');
+      b.box(ex + 0.8, ey + 0.5, ez + 0.15, 0.6, 0.15, 0.05, '#ff5c8a');
+      b.box(ex + 0.65, ey + 0.35, ez + 0.15, 0.3, 0.2, 0.05, '#ff5c8a');
+    }
+    ctx.station({ x, markerY: 4.6, label: 'Hire me', target: { type: 'section', id: ctx.th.id } });
   },
 
   flag(ctx) {
@@ -371,7 +406,7 @@ export const PROPS = {
 
   campfire(ctx) {
     const { b, cx } = ctx;
-    const x = cx + 4, z = -7;
+    const x = cx + 13, z = -5;
     ctx.flat(x, z, 2, 2);
     b.box(x - 0.5, 0, z + 0.3, 2, 0.4, 0.4, '#5a3a22');
     b.box(x + 0.3, 0, z - 0.5, 0.4, 0.4, 2, '#5a3a22');

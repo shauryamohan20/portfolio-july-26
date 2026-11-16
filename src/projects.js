@@ -1,8 +1,12 @@
 // Entry for /projects/ — a light page: no Three.js, just the full list and a platform filter.
 import './style.css';
+import { inject } from '@vercel/analytics';
 import { setupReveals } from './ui/reveal.js';
+import { setupStage } from './ui/stage.js';
 
+inject(); // Vercel Web Analytics
 setupReveals();
+setupStage();
 
 const chips = [...document.querySelectorAll('[data-filter]')];
 const cards = [...document.querySelectorAll('.work')];

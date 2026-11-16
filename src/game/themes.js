@@ -203,7 +203,7 @@ const THEMES = {
     snow: '#cfe6ff',
     leaves: ['#1f5a44', '#1a4e3b', '#24684f'],
     trunk: '#4a3322',
-    props: ['mailbox', 'flag', 'campfire', 'pines', 'fireflies'],
+    props: ['hireMe', 'flag', 'campfire', 'pines', 'fireflies'],
   },
 };
 

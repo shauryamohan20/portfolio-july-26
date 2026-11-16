@@ -10,7 +10,7 @@ import { clamp, lerp, smoothstep } from './utils.js';
 const COARSE = window.matchMedia('(pointer: coarse)').matches;
 // Full-resolution rendering: native pixels, capped so phones stay smooth.
 const MAX_DPR = COARSE ? 1.5 : 2;
-const RUN_SPEED = 10; // voxels per second
+const RUN_SPEED = COARSE ? 12 : 10; // voxels per second (a little faster on phones)
 const READ_RANGE = 2.4; // how close (along the road) you must be to read a station
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
 
@@ -22,11 +22,13 @@ const JUMP_KEYS = new Set(['Space', 'ArrowUp', 'KeyW']);
  * on-screen buttons. Jump with Space / ↑ / W. Read a station with E / Enter.
  */
 export class Game {
-  constructor({ canvas, audio, hud, onRead }) {
+  constructor({ canvas, audio, hud, onRead, onFinish }) {
     this.canvas = canvas;
     this.audio = audio;
     this.hud = hud;
     this.onRead = onRead;
+    this.onFinish = onFinish;
+    this.finished = false;
     this.sections = [...document.querySelectorAll('main > section.zone')];
     this.themes = this.sections.map((s) => getTheme(s.id));
     this.zones = [];
@@ -215,16 +217,45 @@ export class Game {
     window.addEventListener('pointerup', end);
     window.addEventListener('pointercancel', end);
 
-    // On-screen hold buttons (◀ ▶).
+    // On-screen buttons. Each finger is tracked on its own, so you can hold ▶ and
+    // press ▲ or A at the same time (multi-touch).
+    const holds = new Map(); // pointerId -> direction
+    const syncHold = () => { this.holdDir = [...holds.values()].reduce((a, b) => a + b, 0); };
     document.querySelectorAll('[data-hold]').forEach((btn) => {
       const dir = btn.dataset.hold === 'right' ? 1 : -1;
-      const on = (e) => { e.preventDefault(); this.drag = dir; btn.classList.add('is-down'); };
-      const off = () => { this.drag = 0; btn.classList.remove('is-down'); };
-      btn.addEventListener('pointerdown', on);
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        try { btn.setPointerCapture(e.pointerId); } catch { /* ok without capture */ }
+        holds.set(e.pointerId, dir);
+        btn.classList.add('is-down');
+        syncHold();
+      });
+      const off = (e) => {
+        if (!holds.has(e.pointerId)) return;
+        holds.delete(e.pointerId);
+        if (![...holds.values()].includes(dir)) btn.classList.remove('is-down');
+        syncHold();
+      };
       btn.addEventListener('pointerup', off);
-      btn.addEventListener('pointerleave', off);
       btn.addEventListener('pointercancel', off);
+      btn.addEventListener('lostpointercapture', off);
     });
+    const tapButton = (selector, fn) => {
+      const btn = document.querySelector(selector);
+      if (!btn) return;
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // fire on touch-down, not on click (clicks get dropped during multi-touch)
+        if (!active()) return;
+        btn.classList.add('is-down');
+        fn();
+      });
+      const up = () => btn.classList.remove('is-down');
+      btn.addEventListener('pointerup', up);
+      btn.addEventListener('pointercancel', up);
+    };
+    tapButton('.touch-jump', () => this.jump());
+    tapButton('.touch-a', () => this.interact());
+    window.addEventListener('blur', () => { holds.clear(); syncHold(); });
   }
 
   ensureZone(i) {
@@ -283,6 +314,19 @@ export class Game {
     } else this.jump();
   }
 
+  /** Start over: back to the beginning with every coin back in place. */
+  restart() {
+    this.zones.forEach((z) => z.coins.forEach((c) => { c.collected = false; c.anim = 0; }));
+    this.coinCount = 0;
+    this.hud?.setCoins(0);
+    // stays "finished" until the teleport below moves us away from the finish line
+    const flash = document.querySelector('.warp');
+    gsap.timeline()
+      .to(flash, { opacity: 1, duration: 0.18, ease: 'power1.in' })
+      .add(() => { this.x = this.world.spawnX; this.vx = 0; this.facing = 1; this.snapLook = true; this.time = 0; this.updateCamera(0, true); })
+      .to(flash, { opacity: 0, duration: 0.35, ease: 'power1.out' });
+  }
+
   /** Fast travel to a zone's first station. */
   travel(i) {
     const z = this.zones[i];
@@ -307,12 +351,20 @@ export class Game {
     // ---- Running ----
     let dir = 0;
     if (!this.paused) {
-      dir = (this.held.has('right') ? 1 : 0) - (this.held.has('left') ? 1 : 0) + this.drag;
+      dir = (this.held.has('right') ? 1 : 0) - (this.held.has('left') ? 1 : 0) + this.drag + (this.holdDir || 0);
       if (!dir && this.time < this.wheelUntil) dir = this.wheelDir;
       dir = clamp(dir, -1, 1);
     }
     this.vx = lerp(this.vx, dir * RUN_SPEED, 1 - Math.exp(-dt * (dir ? 9 : 12)));
     this.x = clamp(this.x + this.vx * dt, minX + 6, maxX - 6);
+    // Reaching the end of the road finishes the run (once, until you head back).
+    if (!this.finished && !this.paused && this.x >= maxX - 8) {
+      this.finished = true;
+      this.held.clear();
+      this.drag = 0;
+      this.vx = 0;
+      this.onFinish?.(this.coinCount);
+    } else if (this.finished && this.x < maxX - 20) this.finished = false;
     if (Math.abs(this.vx) > 0.3) this.facing = Math.sign(this.vx);
     const running = Math.abs(this.vx) > 0.6;
     this.character.root.position.set(this.x, 0, 0);

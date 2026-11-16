@@ -34,6 +34,7 @@ function portfolioHtml() {
         .replace('<!--projects-page-->', render.renderProjectsPage(sections))
         .replace('<!--nav-->', render.renderNav(sections))
         .replace('<!--content-->', render.renderSections(sections, site))
+        .replace('<!--stage-->', render.renderStage(sections))
         .replace('<!--footer-->', render.renderFooter(site))
         .replace('<!--project-templates-->', render.renderProjectTemplate(sections));
     },

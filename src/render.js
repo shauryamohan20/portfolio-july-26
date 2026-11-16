@@ -73,7 +73,7 @@ const KINDS = {
     const all = s.items || [];
     let shown = all.filter((p) => p.featured);
     if (!shown.length) shown = all.slice(0, 4);
-    shown = shown.slice(0, 4);
+    shown = shown.slice(0, 4).map((p) => ({ ...p, _i: all.indexOf(p) }));
     const more = s.more
       ? `<p class="ctas"><a class="btn btn--primary" href="${esc(s.more.url)}">${esc(s.more.label)}</a></p>`
       : '';
@@ -112,7 +112,7 @@ function projectCards(items, level = 3, eagerCount = 0) {
         ? `<img class="work-shot" src="${esc(p.image)}" srcset="${esc(p.image)} 900w, ${esc(hd(p.image))} 2880w" sizes="(max-width: 820px) 40vw, 240px" alt="${esc(p.alt || `Home page of the ${p.title} website`)}" width="900" height="563"${i < eagerCount ? '' : ' loading="lazy"'} decoding="async">`
         : `<span class="work-shot work-shot--empty" aria-hidden="true">${esc(initials(p.title))}</span>`;
       const title = p.url ? `<a href="${esc(p.url)}"${linkAttrs(p.url)}>${esc(p.title)}</a>` : esc(p.title);
-      return `<li class="work plat--${plat}" data-platform="${esc(p.platform)}">
+      return `<li class="work plat--${plat}" data-platform="${esc(p.platform)}" data-index="${p._i ?? i}">
   ${shot}
   <div class="work-main">
     <h${level} class="work-title">${title}</h${level}>
@@ -259,6 +259,36 @@ export function renderHead(site, sections = []) {
 <meta name="twitter:description" content="${esc(site.description)}" />
 <meta name="twitter:image" content="${esc(og)}" />
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`;
+}
+
+/**
+ * The fixed "stage" of the normal view (desktop): one browser-framed frame per
+ * store plus the app, and a map of which frame each section shows.
+ */
+export function renderStage(sections) {
+  const stores = sections.find((s) => s.kind === 'projects')?.items || [];
+  const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+  const frames = stores.map((p) => ({ img: p.image, title: p.title, url: p.url, tag: p.category }));
+  const map = {};
+  sections.forEach((s) => {
+    if (s.kind === 'feature' && s.image) {
+      map[s.id] = frames.length;
+      frames.push({ img: s.image, title: s.heading, url: s.ctas?.[0]?.url || '', tag: s.lead || '' });
+    }
+  });
+  let k = 0;
+  sections.forEach((s) => {
+    if (map[s.id] != null || !stores.length) return;
+    map[s.id] = s.kind === 'projects' ? 0 : k++ % stores.length;
+  });
+  const html = frames
+    .map((f, i) => `<div class="stage-frame${i === 0 ? ' is-on' : ''}" data-frame="${i}">
+  <div class="stage-bar" aria-hidden="true"><i></i><i></i><i></i><span class="stage-url">${esc(host(f.url))}</span></div>
+  <img src="${esc(hd(f.img))}" alt="" width="2880" height="1800" decoding="async"${i === 0 ? ' fetchpriority="high"' : ' loading="lazy"'}>
+  <div class="stage-cap" aria-hidden="true"><strong>${esc(f.title)}</strong><span>${esc(f.tag)}</span></div>
+</div>`)
+    .join('');
+  return `<aside class="stage plain-only" aria-label="Store previews" data-map='${esc(JSON.stringify(map))}'>${html}</aside>`;
 }
 
 export function renderFooter(site) {

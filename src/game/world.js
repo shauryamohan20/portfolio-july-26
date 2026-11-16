@@ -4,10 +4,12 @@ import { PROPS } from './props.js';
 import { mulberry32, noise2, pick, clamp, lerp, smoothstep, voxelText, textWidth } from './utils.js';
 
 /** Length of one zone along the road (x axis), in voxels. */
-export const ZONE = 64;
+// Phones get shorter zones, so the whole run takes less time there.
+const COARSE = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+export const ZONE = COARSE ? 46 : 64;
 const Z_BACK = -30; // terrain depth behind the road
 const Z_FRONT = 14; // terrain edge nearest the camera
-export const END_PAD = 22; // extra ground before the first and after the last zone
+export const END_PAD = COARSE ? 14 : 22; // extra ground before the first and after the last zone
 
 /**
  * The run: zones line up left to right along one road (z = 0), in content order.

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@700&family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
     <script>
@@ -41,7 +41,8 @@
           <button type="button" class="btn" data-action="start-muted">Start muted</button>
         </div>
         <button type="button" class="link-btn" data-action="plain">Skip to normal view</button>
-        <p class="boot-help">Run with the arrow keys, A / D or the mouse wheel. Space jumps. Press E under a glowing marker to read it. M toggles music.</p>
+        <p class="boot-help boot-help--keys">Run with the arrow keys, A / D or the mouse wheel. Space jumps. Press E under a glowing marker to read it. M toggles music.</p>
+        <p class="boot-help boot-help--touch">Hold &#9664; &#9654; to run. Tap &#9650; to jump. Tap A under a glowing marker to read it.</p>
       </div>
     </div>
 
@@ -60,6 +61,7 @@
 
     <!--nav-->
 
+    <!--stage-->
     <main id="main" tabindex="-1">
       <!--content-->
     </main>
@@ -69,19 +71,34 @@
     <!-- 3D view only: in-world reading, prompts and touch controls -->
     <dialog id="reader" class="reader" aria-labelledby="reader-title">
       <div class="reader-body"></div>
+      <p class="reader-hint" aria-hidden="true" hidden>Scroll for more <span>&#9660;</span></p>
       <button type="button" class="reader-close btn" data-action="close-reader">Close <span aria-hidden="true">(Esc)</span></button>
+    </dialog>
+    <dialog id="finish" class="reader finish" aria-labelledby="finish-title">
+      <div class="reader-body">
+        <p class="eyebrow">Level complete</p>
+        <h2 id="finish-title">You finished the run!</h2>
+        <p class="finish-coins">Coins collected: <strong id="finish-coins">0</strong></p>
+        <p>Liked what you saw? Let's build or improve your Shopify store together.</p>
+        <p class="ctas">
+          <a class="btn btn--primary" id="finish-email" href="#contact">Contact me</a>
+          <button type="button" class="btn" data-action="run-again">Run again</button>
+        </p>
+        <button type="button" class="link-btn" data-action="close-finish">Keep exploring</button>
+      </div>
     </dialog>
     <div id="prompt" class="prompt game-only" hidden>
       <button type="button" class="prompt-btn" data-action="interact"><kbd>E</kbd><span class="prompt-label"><small>Press to read</small><span class="prompt-text"></span></span></button>
     </div>
     <div id="help" class="help game-only" hidden>
       <p class="help-keys">&larr; &rarr; or scroll to run &middot; Space to jump &middot; E to read</p>
-      <p class="help-touch">Hold &#9664; &#9654; or drag to run &middot; A to read &middot; tap to jump</p>
+      <p class="help-touch">Hold &#9664; &#9654; to run &middot; &#9650; to jump &middot; A to read</p>
     </div>
     <div class="touch game-only" aria-hidden="true">
       <button type="button" class="touch-dir touch-left" data-hold="left" tabindex="-1">&#9664;</button>
       <button type="button" class="touch-dir touch-right" data-hold="right" tabindex="-1">&#9654;</button>
-      <button type="button" class="touch-a" data-action="interact" tabindex="-1">A</button>
+      <button type="button" class="touch-jump" tabindex="-1" aria-label="Jump">&#9650;</button>
+      <button type="button" class="touch-a" tabindex="-1" aria-label="Read">A</button>
     </div>
     <div class="warp game-only" aria-hidden="true"></div>
     <!--project-templates-->

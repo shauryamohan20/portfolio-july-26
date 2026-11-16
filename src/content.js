@@ -24,9 +24,7 @@ export const site = {
   ogImage: '/projects/hd/bezika.webp',
   ogImageAlt: 'A Shopify store built by Shaurya Mohan',
   themeColor: '#0d0f1f',
-  // ADD YOUR EMAIL: the 'Email me' button stays hidden until this is filled in.
-  email: '',
-  whatsapp: 'https://wa.me/919196154491',
+  email: 'shaurya.mohan20@gmail.com',
   // Colours of the voxel character in the game.
   character: {
     skin: '#c98d62',
@@ -218,7 +216,7 @@ export const sections = [
       },
       {
         q: 'How do we start a Shopify project?',
-        a: 'Send me a message with your store link, what you want to change or build, and when you need it. I will reply with questions and a plan.',
+        a: `Email me at ${site.email} with your store link, what you want to change or build, and when you need it. I will reply with questions and a plan.`,
       },
     ],
   },
@@ -230,8 +228,8 @@ export const sections = [
     heading: 'Hire a Shopify developer',
     paragraphs: ['Need a new Shopify store, a custom theme, a faster store or a Shopify discount set up? Tell me about your store, what it needs and when you need it.'],
     ctas: [
-      { label: 'Email me', url: site.email ? `mailto:${site.email}` : '', primary: true },
-      { label: 'WhatsApp', url: site.whatsapp, primary: !site.email },
+      { label: 'Email me', url: `mailto:${site.email}?subject=Shopify%20project`, primary: true },
+      { label: site.email, url: `mailto:${site.email}` },
     ],
   },
 ];
