@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" class="plain">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!--head-->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@700&family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Pick the view before first paint. No JS = plain view, which always works.
+      (function () {
+        var d = document.documentElement, v = null;
+        try { v = localStorage.getItem('view'); } catch (e) {}
+        var q = /[?&]view=(plain|game)/.exec(location.search);
+        if (q) { v = q[1]; try { localStorage.setItem('view', v); } catch (e) {} }
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var gl = !!window.WebGLRenderingContext;
+        if (gl && (v === 'game' || (v !== 'plain' && !reduce))) d.className = 'game booting';
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link" data-action="plain">Skip to normal view</a>
+
+    <div id="boot" class="boot game-only" role="dialog" aria-modal="true" aria-labelledby="boot-title">
+      <div class="boot-inner">
+        <p class="boot-brand">A portfolio by</p>
+        <p id="boot-title" class="boot-title">SHAURYA MOHAN<span>Shopify Developer</span></p>
+        <div class="boot-runner" aria-hidden="true"><span class="boot-coin"></span><span class="boot-coin"></span><span class="boot-coin"></span></div>
+        <div class="boot-bar" role="progressbar" aria-label="Loading the world" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span></span>
+        </div>
+        <p class="boot-status"><span class="boot-msg" aria-live="polite">Booting...</span> <span class="boot-pct">0%</span></p>
+        <div class="boot-actions" hidden>
+          <button type="button" class="btn btn--primary" data-action="start-sound">Start with sound</button>
+          <button type="button" class="btn" data-action="start-muted">Start muted</button>
+        </div>
+        <button type="button" class="link-btn" data-action="plain">Skip to normal view</button>
+        <p class="boot-help">Run with the arrow keys, A / D or the mouse wheel. Space jumps. Press E under a glowing marker to read it. M toggles music.</p>
+      </div>
+    </div>
+
+    <canvas id="world" class="game-only" aria-hidden="true"></canvas>
+
+    <header class="hud">
+      <a class="hud-logo" href="#intro">Shaurya Mohan</a>
+      <p class="hud-zone game-only" aria-hidden="true"><span id="hud-zone-num">1/6</span> <span id="hud-zone-name">Start</span></p>
+      <p class="hud-coins game-only"><span class="coin-icon" aria-hidden="true"></span><span class="sr-only">Coins: </span><span id="coin-count">00</span></p>
+      <div class="hud-actions">
+        <button type="button" class="hud-btn game-only" id="mute-btn" data-action="mute" aria-pressed="false">Music off</button>
+        <button type="button" class="hud-btn" id="view-btn" data-action="toggle-view">Normal view</button>
+        <a class="hud-cta plain-only" href="#contact">Get in touch</a>
+      </div>
+    </header>
+
+    <!--nav-->
+
+    <main id="main" tabindex="-1">
+      <!--content-->
+    </main>
+
+    <!--footer-->
+
+    <!-- 3D view only: in-world reading, prompts and touch controls -->
+    <dialog id="reader" class="reader" aria-labelledby="reader-title">
+      <div class="reader-body"></div>
+      <button type="button" class="reader-close btn" data-action="close-reader">Close <span aria-hidden="true">(Esc)</span></button>
+    </dialog>
+    <div id="prompt" class="prompt game-only" hidden>
+      <button type="button" class="prompt-btn" data-action="interact"><kbd>E</kbd><span class="prompt-label"><small>Press to read</small><span class="prompt-text"></span></span></button>
+    </div>
+    <div id="help" class="help game-only" hidden>
+      <p class="help-keys">&larr; &rarr; or scroll to run &middot; Space to jump &middot; E to read</p>
+      <p class="help-touch">Hold &#9664; &#9654; or drag to run &middot; A to read &middot; tap to jump</p>
+    </div>
+    <div class="touch game-only" aria-hidden="true">
+      <button type="button" class="touch-dir touch-left" data-hold="left" tabindex="-1">&#9664;</button>
+      <button type="button" class="touch-dir touch-right" data-hold="right" tabindex="-1">&#9654;</button>
+      <button type="button" class="touch-a" data-action="interact" tabindex="-1">A</button>
+    </div>
+    <div class="warp game-only" aria-hidden="true"></div>
+    <!--project-templates-->
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
