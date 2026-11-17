@@ -72,9 +72,9 @@ export function createHud({ audio, onAction }) {
       prompt.hidden = !station;
       if (station) promptText.textContent = station.label;
     },
-    setCoins(n) {
+    setCoins(n, total) {
       if (!coinEl) return;
-      coinEl.textContent = String(n).padStart(2, '0');
+      coinEl.textContent = total ? `${n}/${total}` : String(n).padStart(2, '0');
       coinEl.parentElement.classList.remove('bump');
       void coinEl.offsetWidth;
       coinEl.parentElement.classList.add('bump');

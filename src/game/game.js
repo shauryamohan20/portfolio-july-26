@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { site } from '../content.js';
 import { getTheme } from './themes.js';
-import { createWorld, ZONE } from './world.js';
+import { createWorld, ZONE, TOTAL_COINS } from './world.js';
 import { Character } from './character.js';
 import { pendingTextures, setRenderer } from './props.js';
 import { clamp, lerp, smoothstep } from './utils.js';
@@ -22,12 +22,15 @@ const JUMP_KEYS = new Set(['Space', 'ArrowUp', 'KeyW']);
  * on-screen buttons. Jump with Space / ↑ / W. Read a station with E / Enter.
  */
 export class Game {
-  constructor({ canvas, audio, hud, onRead, onFinish }) {
+  constructor({ canvas, audio, hud, onRead, onFinish, onAllCoins }) {
     this.canvas = canvas;
     this.audio = audio;
     this.hud = hud;
     this.onRead = onRead;
     this.onFinish = onFinish;
+    this.onAllCoins = onAllCoins;
+    this.golden = false;
+    this.confetti = null;
     this.finished = false;
     this.sections = [...document.querySelectorAll('main > section.zone')];
     this.themes = this.sections.map((s) => getTheme(s.id));
@@ -318,11 +321,61 @@ export class Game {
     } else this.jump();
   }
 
+  /** All coins collected: golden runner, a confetti burst, a fanfare and the secret panel. */
+  celebrate() {
+    if (!this.golden) {
+      this.golden = true;
+      this.character.makeGolden();
+    }
+    this.audio?.sfx('fanfare');
+    this.burstConfetti();
+    setTimeout(() => this.onAllCoins?.(), 1400);
+  }
+
+  burstConfetti() {
+    const n = 180;
+    if (!this.confetti) {
+      const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.22, 0.22, 0.06), new THREE.MeshBasicMaterial(), n);
+      mesh.frustumCulled = false;
+      const palette = ['#ffd23f', '#ff5c8a', '#3fd0ff', '#95bf47', '#ffffff', '#b98cff'].map((c) => new THREE.Color(c));
+      for (let k = 0; k < n; k++) mesh.setColorAt(k, palette[k % palette.length]);
+      this.scene.add(mesh);
+      this.confetti = { mesh, parts: [] };
+    }
+    this.confetti.parts = Array.from({ length: n }, () => ({
+      p: new THREE.Vector3(this.x, 2.5, 0),
+      v: new THREE.Vector3((Math.random() - 0.5) * 10, 7 + Math.random() * 9, (Math.random() - 0.5) * 6),
+      r: Math.random() * 6, s: (Math.random() - 0.5) * 12,
+    }));
+    this.confetti.life = 4.5;
+    this.confetti.mesh.visible = true;
+  }
+
+  updateConfetti(dt) {
+    const c = this.confetti;
+    if (!c || !c.mesh.visible) return;
+    c.life -= dt;
+    const { _m: m, _q: q, _e: e, _s: s } = this;
+    c.parts.forEach((pt, k) => {
+      pt.v.y -= 14 * dt;
+      pt.v.multiplyScalar(1 - dt * 0.6);
+      pt.p.addScaledVector(pt.v, dt);
+      pt.r += pt.s * dt;
+      e.set(pt.r, pt.r * 0.7, 0);
+      q.setFromEuler(e);
+      s.setScalar(Math.max(0.0001, Math.min(1, c.life)));
+      m.compose(pt.p, q, s);
+      c.mesh.setMatrixAt(k, m);
+    });
+    c.mesh.instanceMatrix.needsUpdate = true;
+    if (c.life <= 0) c.mesh.visible = false;
+  }
+
   /** Start over: back to the beginning with every coin back in place. */
   restart() {
     this.zones.forEach((z) => z.coins.forEach((c) => { c.collected = false; c.anim = 0; }));
     this.coinCount = 0;
-    this.hud?.setCoins(0);
+    this.hud?.setCoins(0, TOTAL_COINS);
     // stays "finished" until the teleport below moves us away from the finish line
     const flash = document.querySelector('.warp');
     gsap.timeline()
@@ -457,6 +510,7 @@ export class Game {
       this.promptEl.style.transform = `translate(${clamp(px, half, window.innerWidth - half)}px, ${Math.max(70, py)}px) translate(-50%, -100%)`;
     }
 
+    this.updateConfetti(dt);
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -487,7 +541,8 @@ export class Game {
       if (this.time > 1.2 && !c.collected && Math.abs(c.x - this.x) < 0.8 && Math.abs(c.y - cy) < 1.5) {
         c.collected = true;
         this.coinCount++;
-        this.hud?.setCoins(this.coinCount);
+        this.hud?.setCoins(this.coinCount, TOTAL_COINS);
+        if (this.coinCount === TOTAL_COINS) this.celebrate();
         this.audio?.sfx('coin');
       }
       let scale = 1, y = c.y + Math.sin(this.time * 3 + k) * 0.1;

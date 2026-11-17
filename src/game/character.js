@@ -84,6 +84,7 @@ export class Character {
     const mat = (col) => new THREE.MeshLambertMaterial({ color: col, flatShading: true });
     const jacket = mat(c.jacket), shirt = mat(c.shirt), pants = mat(c.pants), shoe = mat(c.shoes);
     const skin = mat(c.skin), hair = mat(c.hair);
+    this.suit = { jacket, pants, shoe };
     const geo = (w, h, d) => new THREE.BoxGeometry(w, h, d);
 
     this.root = new THREE.Group();
@@ -144,6 +145,22 @@ export class Character {
     this.head.add(headMesh, cap, quiff, backHair);
 
     this.body.add(this.legL, this.legR, torso, shirtV, belt, this.armL, this.armR, neck, this.head);
+    // Hidden until every coin is collected: a voxel crown.
+    const gold = new THREE.MeshStandardMaterial({ color: 0xffd23f, emissive: 0x6a4a00, metalness: 0.7, roughness: 0.3 });
+    this.crown = new THREE.Group();
+    const band = new THREE.Mesh(geo(1.0, 0.22, 0.9), gold);
+    this.crown.add(band);
+    for (const [px, pz] of [[-0.38, 0.33], [0, 0.33], [0.38, 0.33], [-0.38, -0.33], [0.38, -0.33]]) {
+      const spike = new THREE.Mesh(geo(0.18, 0.28, 0.18), gold);
+      spike.position.set(px, 0.24, pz);
+      this.crown.add(spike);
+    }
+    const gem = new THREE.Mesh(geo(0.16, 0.16, 0.06), new THREE.MeshBasicMaterial({ color: 0xff3d7f }));
+    gem.position.set(0, 0.02, 0.47);
+    this.crown.add(gem);
+    this.crown.position.y = 1.48;
+    this.crown.visible = false;
+    this.head.add(this.crown);
     this.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
 
     this.phase = 0;
@@ -152,6 +169,15 @@ export class Character {
     this.yaw = Math.PI / 2;
     this.jumpY = 0;
     this.vy = 0;
+  }
+
+  /** Easter egg: a gold suit and a crown. */
+  makeGolden() {
+    const { jacket, pants, shoe } = this.suit;
+    jacket.color.set('#e6b422');
+    pants.color.set('#8a6a10');
+    shoe.color.set('#ffd23f');
+    this.crown.visible = true;
   }
 
   jump() {

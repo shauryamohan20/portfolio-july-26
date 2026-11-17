@@ -9,6 +9,8 @@ const COARSE = typeof window !== 'undefined' && window.matchMedia('(pointer: coa
 export const ZONE = COARSE ? 46 : 64;
 const Z_BACK = -30; // terrain depth behind the road
 const Z_FRONT = 14; // terrain edge nearest the camera
+/** Coins in the whole run (same on phones and desktop). Collect them all for a surprise. */
+export const TOTAL_COINS = 100;
 export const END_PAD = COARSE ? 14 : 22; // extra ground before the first and after the last zone
 
 /**
@@ -143,15 +145,21 @@ export function createWorld(themes) {
     const group = b.toGroup(mats);
     group.add(extras, markers);
 
-    // ---- Coin trails along the road: some low, some in a jump arc ----
+    // ---- Coins: exactly TOTAL_COINS across the whole run, on every device ----
+    // Each zone gets its share, laid out as trails of five that alternate
+    // between low (just run through) and an arc (jump for the top ones).
     const coins = [];
-    const busy = stations.map((s) => s.x);
-    for (let k = 0; k < 4; k++) {
-      const start = x0 + 6 + k * (ZONE / 4) + rng() * 4;
-      if (busy.some((bx) => Math.abs(bx - start - 2) < 5)) continue;
-      const arc = rng() < 0.5;
-      for (let c = 0; c < 5; c++) {
-        const y = arc ? 1.6 + Math.sin((c / 4) * Math.PI) * 2.6 : 1.5;
+    const share = Math.floor(TOTAL_COINS / N) + (i < TOTAL_COINS % N ? 1 : 0);
+    const trails = Math.ceil(share / 5);
+    let left = share;
+    for (let t = 0; t < trails; t++) {
+      const n = Math.min(5, left);
+      left -= n;
+      const centre = x0 + (ZONE * (t + 0.5)) / trails;
+      const start = centre - ((n - 1) * 1.3) / 2;
+      const arc = (t + i) % 2 === 1;
+      for (let c = 0; c < n; c++) {
+        const y = arc && n > 1 ? 1.6 + Math.sin((c / (n - 1)) * Math.PI) * 2.4 : 1.5;
         coins.push({ x: start + c * 1.3, y, z: 0, collected: false, anim: 0 });
       }
     }

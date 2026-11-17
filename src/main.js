@@ -33,9 +33,27 @@ let finishOpenedAt = 0;
 finish.addEventListener('click', (e) => {
   if (e.target === finish && performance.now() - finishOpenedAt > 500) finish.close();
 });
-function showFinish(coins) {
+// Easter egg panel, shown once all coins are collected.
+const secret = document.getElementById('secret');
+const secretEmail = document.getElementById('secret-email');
+secretEmail.href = `mailto:${site.email}?subject=I%20found%20all%20100%20coins`;
+let secretOpenedAt = 0;
+secret.addEventListener('close', () => game && (game.paused = false));
+secret.addEventListener('click', (e) => {
+  if (e.target === secret && performance.now() - secretOpenedAt > 500) secret.close();
+});
+function showSecret() {
+  if (!game || reader.isOpen || finish.open) return;
   game.paused = true;
-  document.getElementById('finish-coins').textContent = String(coins);
+  secretOpenedAt = performance.now();
+  secret.showModal();
+  secretEmail.focus();
+}
+
+function showFinish(coins) {
+  if (secret.open) return;
+  game.paused = true;
+  document.getElementById('finish-coins').textContent = `${coins}/100`;
   audio.sfx('coin');
   finishOpenedAt = performance.now();
   finish.showModal();
@@ -67,6 +85,9 @@ function onAction(action, e) {
       break;
     case 'close-reader':
       reader.close();
+      break;
+    case 'close-secret':
+      secret.close();
       break;
     case 'close-finish':
       finish.close();
@@ -132,6 +153,7 @@ async function boot() {
         audio,
         hud,
         onFinish: showFinish,
+        onAllCoins: showSecret,
         onRead: (station) => {
           game.paused = true;
           reader.open(station.target);

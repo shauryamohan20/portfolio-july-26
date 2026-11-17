@@ -232,6 +232,8 @@ export class Chiptune {
     if (name === 'coin') {
       play(988, 0, 0, 0.07);
       play(1319, 0, 0.07, 0.25);
+    } else if (name === 'fanfare') {
+      [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, k) => play(f, 0, k * 0.11, k === 6 ? 0.6 : 0.12));
     } else if (name === 'jump') {
       play(300, 720, 0, 0.16);
     }

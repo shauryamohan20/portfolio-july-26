@@ -160,6 +160,10 @@ html.booting body { overflow: hidden; }
 .finish .reader-body { text-align: center; padding-bottom: 24px; }
 .finish .ctas { justify-content: center; }
 .finish .link-btn { display: block; margin: 4px auto 0; }
+.secret { box-shadow: 0 0 0 4px #ffd23f, 0 0 0 8px #14162b, 0 0 60px 10px rgba(255, 210, 63, 0.45); }
+.secret h2 { color: var(--gold) !important; }
+.secret-crown { font-size: 54px; line-height: 1; color: var(--gold); margin: 4px 0 12px; animation: crownBob 1.2s ease-in-out infinite; }
+@keyframes crownBob { 50% { transform: translateY(-6px) rotate(-6deg); } }
 .finish-coins strong { font-family: var(--font-head); color: var(--gold); font-size: 20px; }
 
 /* ============================================================

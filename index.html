@@ -51,7 +51,7 @@
     <header class="hud">
       <a class="hud-logo" href="#intro">Shaurya Mohan</a>
       <p class="hud-zone game-only" aria-hidden="true"><span id="hud-zone-num">1/6</span> <span id="hud-zone-name">Start</span></p>
-      <p class="hud-coins game-only"><span class="coin-icon" aria-hidden="true"></span><span class="sr-only">Coins: </span><span id="coin-count">00</span></p>
+      <p class="hud-coins game-only"><span class="coin-icon" aria-hidden="true"></span><span class="sr-only">Coins: </span><span id="coin-count">0/100</span></p>
       <div class="hud-actions">
         <button type="button" class="hud-btn game-only" id="mute-btn" data-action="mute" aria-pressed="false">Music off</button>
         <button type="button" class="hud-btn" id="view-btn" data-action="toggle-view">Normal view</button>
@@ -85,6 +85,19 @@
           <button type="button" class="btn" data-action="run-again">Run again</button>
         </p>
         <button type="button" class="link-btn" data-action="close-finish">Keep exploring</button>
+      </div>
+    </dialog>
+    <dialog id="secret" class="reader finish secret" aria-labelledby="secret-title">
+      <div class="reader-body">
+        <p class="eyebrow">Secret unlocked</p>
+        <h2 id="secret-title">100/100 coins!</h2>
+        <p class="secret-crown" aria-hidden="true">&#9813;</p>
+        <p>You found every coin in the run, so your runner is now golden and wears the crown.</p>
+        <p>Someone who checks every corner like that is exactly who I like building Shopify stores with.</p>
+        <p class="ctas">
+          <a class="btn btn--primary" id="secret-email" href="#contact">Email me</a>
+          <button type="button" class="btn" data-action="close-secret">Keep running</button>
+        </p>
       </div>
     </dialog>
     <div id="prompt" class="prompt game-only" hidden>
