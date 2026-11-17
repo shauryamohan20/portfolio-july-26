@@ -25,6 +25,33 @@ export const SONG = {
   },
 };
 
+/**
+ * "Never Dies": an original tribute anthem for Technoblade, played when every coin
+ * is collected. Starts solemn in A minor and climbs to a triumphant C major.
+ * 8 bars of 16th notes, one chord per bar.
+ */
+export const TRIBUTE = {
+  bpm: 92,
+  volume: 0.34,
+  style: 'anthem',
+  duty: 0.5,
+  lead: `A4 - - - C5 - E5 - A5 - - - G5 - E5 -
+         F5 - - - E5 - D5 - C5 - - - A4 - C5 -
+         E5 - - - G5 - C6 - - - B5 - A5 - G5 -
+         D5 - - - G5 - - - B5 - - - D6 - - -
+         E6 - - - D6 - C6 - A5 - - - C6 - E6 -
+         F6 - - - E6 - D6 - C6 - - - A5 - F5 -
+         G5 - - - B5 - D6 - G6 - - - F6 - D6 -
+         E6 - - - - - - - C6 - - - - - - -`,
+  bass: ['A2', 'F2', 'C3', 'G2', 'A2', 'F2', 'G2', 'C3'],
+  chords: [
+    ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['C4', 'E4', 'G4'], ['G3', 'B3', 'D4'],
+    ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['G3', 'B3', 'D4'], ['C4', 'E4', 'G4'],
+  ],
+};
+
+const SONGS = { main: SONG, tribute: TRIBUTE };
+
 const NOTE_IDX = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 function midi(n) {
   const m = /^([A-G])(#?)(\d)$/.exec(n);
@@ -37,7 +64,8 @@ export class Chiptune {
     this.muted = true;
     this.ctx = null;
     this.zone = 'intro';
-    this.lead = SONG.lead.trim().split(/\s+/);
+    this.songName = 'main';
+    this.leads = Object.fromEntries(Object.entries(SONGS).map(([k, v]) => [k, v.lead.trim().split(/\s+/)]));
     if (typeof document !== 'undefined') this.watchVisibility();
   }
 
@@ -50,7 +78,7 @@ export class Chiptune {
     this.master.gain.value = 0;
     this.master.connect(ctx.destination);
     this.music = ctx.createGain();
-    this.music.gain.value = SONG.volume;
+    this.music.gain.value = this.song.volume;
     this.music.connect(this.master);
     this.fx = ctx.createGain();
     this.fx.gain.value = 0.35;
@@ -115,6 +143,20 @@ export class Chiptune {
     this.zone = id;
   }
 
+  get song() {
+    return SONGS[this.songName] || SONG;
+  }
+
+  /** Switch songs ('main' or 'tribute'), starting the new one from its first beat. */
+  playSong(name) {
+    if (!SONGS[name] || name === this.songName) return;
+    this.songName = name;
+    this.step = 0;
+    if (!this.ctx) return;
+    this.music.gain.setTargetAtTime(this.song.volume, this.ctx.currentTime, 0.05);
+    if (this.timer) this.next = this.ctx.currentTime + 0.08;
+  }
+
   start() {
     if (this.timer) return;
     this.step = 0;
@@ -128,11 +170,14 @@ export class Chiptune {
   }
 
   schedule() {
-    const spb = 60 / SONG.bpm / 4;
+    const song = this.song;
+    const steps = this.leads[this.songName].length;
+    const spb = 60 / song.bpm / 4;
     while (this.next < this.ctx.currentTime + 0.12) {
-      this.playStep(this.step, this.next, spb);
+      if (song.style === 'anthem') this.playAnthemStep(this.step, this.next, spb);
+      else this.playStep(this.step, this.next, spb);
       this.next += spb;
-      this.step = (this.step + 1) % 64;
+      this.step = (this.step + 1) % steps;
     }
   }
 
@@ -142,11 +187,12 @@ export class Chiptune {
     const tr = this.cfg.transpose || 0;
 
     // Lead
-    const tok = this.lead[step];
+    const lead = this.leads.main;
+    const tok = lead[step];
     const m = midi(tok);
     if (m !== null) {
       let hold = 1;
-      while (this.lead[(step + hold) % 64] === '-' && hold < 16) hold++;
+      while (lead[(step + hold) % lead.length] === '-' && hold < 16) hold++;
       this.tone(m + tr, t, hold * spb * 0.95, this.pulse(this.cfg.duty || 0.5), 0.1);
     }
     // Bass (triangle, octave bounce)
@@ -164,6 +210,31 @@ export class Chiptune {
       this.tone(midi('C2') + tr, t, spb * 16, 'sawtooth', 0.05, 500);
       this.tone(midi('G2') + tr, t, spb * 16, 'sawtooth', 0.035, 500);
     }
+  }
+
+  /** The tribute: doubled lead, a sustained pad, quarter-note bass and a marching kit. */
+  playAnthemStep(step, t, spb) {
+    const song = TRIBUTE, lead = this.leads.tribute;
+    const s = step % 16, bar = step >> 4;
+    const m = midi(lead[step]);
+    if (m !== null) {
+      let hold = 1;
+      while (lead[(step + hold) % lead.length] === '-' && hold < 16) hold++;
+      const dur = hold * spb * 0.97;
+      this.tone(m, t, dur, this.pulse(song.duty), 0.11); // lead
+      this.tone(m - 12, t, dur, this.pulse(0.25), 0.05); // octave below, for weight
+      if (bar >= 4) this.tone(m + 7 - 12, t, dur, this.pulse(0.125), 0.025); // a fifth, second half only
+    }
+    const ch = song.chords[bar];
+    if (s === 0) ch.forEach((n) => this.tone(midi(n), t, spb * 16, 'sawtooth', 0.03, 1100)); // pad
+    const root = midi(song.bass[bar]);
+    if (s % 4 === 0) this.tone(s === 8 ? root + 12 : root, t, spb * 3.6, 'triangle', 0.24); // bass
+    if (s % 2 === 1) this.tone(midi(ch[(s >> 1) % 3]) + 12, t, spb * 0.8, this.pulse(0.125), 0.02); // shimmer
+    // Marching kit: kick on 1 and 3, snare on 2 and 4, a roll into each half, a crash on the downbeats.
+    if (s === 0 || s === 8) this.kick(t);
+    if (s === 4 || s === 12) this.hit(t, 1500, 0.16, 0.3);
+    if ((bar === 3 || bar === 7) && s >= 12) this.hit(t, 1800, 0.08, 0.18 + (s - 12) * 0.04);
+    if ((bar === 0 || bar === 4) && s === 0) this.hit(t, 3500, 0.9, 0.22);
   }
 
   tone(m, t, dur, wave, vol, lowpass) {

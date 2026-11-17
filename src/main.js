@@ -38,7 +38,17 @@ const secret = document.getElementById('secret');
 const secretEmail = document.getElementById('secret-email');
 secretEmail.href = `mailto:${site.email}?subject=I%20found%20all%20100%20coins`;
 let secretOpenedAt = 0;
-secret.addEventListener('close', () => game && (game.paused = false));
+// The tribute song plays from the 100-coin moment until this panel closes.
+let tributeOverride = false; // true when music was off and the visitor pressed "Play the tribute"
+secret.addEventListener('close', () => {
+  if (game) game.paused = false;
+  audio.playSong('main');
+  if (tributeOverride) {
+    tributeOverride = false;
+    audio.setMuted(true); // they had music off: back to silence
+  }
+  hud.syncMute();
+});
 secret.addEventListener('click', (e) => {
   if (e.target === secret && performance.now() - secretOpenedAt > 500) secret.close();
 });
@@ -46,6 +56,7 @@ secret.addEventListener('click', (e) => {
 function celebrateAllCoins() {
   const banner = document.getElementById('tb-banner');
   root.classList.add('celebrating');
+  if (!audio.muted) setTimeout(() => audio.playSong('tribute'), 800); // after the coin fanfare
   banner.hidden = false;
   banner.classList.remove('tb-banner--out');
   void banner.offsetWidth;
@@ -63,6 +74,7 @@ function celebrateAllCoins() {
 function showSecret() {
   if (!game || reader.isOpen || finish.open) return;
   game.paused = true;
+  secret.querySelector('.secret-music').hidden = !audio.muted;
   secretOpenedAt = performance.now();
   secret.showModal();
   secretEmail.focus();
@@ -103,6 +115,13 @@ function onAction(action, e) {
       break;
     case 'close-reader':
       reader.close();
+      break;
+    case 'play-tribute':
+      tributeOverride = audio.muted;
+      audio.playSong('tribute');
+      audio.setMuted(false); // inside the click, so the browser allows audio
+      hud.syncMute();
+      secret.querySelector('.secret-music').hidden = true;
       break;
     case 'close-secret':
       secret.close();
@@ -178,7 +197,7 @@ async function boot() {
         },
       });
       await game.load(progress);
-      if (import.meta.env.DEV) window.__game = game; // handy for debugging; removed from production builds
+      if (import.meta.env.DEV) Object.assign(window, { __game: game, __audio: audio }); // debugging only; removed from production builds
     } catch (err) {
       console.error(err);
       status.textContent = '3D could not start. Opening normal view...';
