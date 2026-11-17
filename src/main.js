@@ -42,6 +42,24 @@ secret.addEventListener('close', () => game && (game.paused = false));
 secret.addEventListener('click', (e) => {
   if (e.target === secret && performance.now() - secretOpenedAt > 500) secret.close();
 });
+// The 100-coin moment: a Technoblade tribute banner over the confetti, then the secret panel.
+function celebrateAllCoins() {
+  const banner = document.getElementById('tb-banner');
+  root.classList.add('celebrating');
+  banner.hidden = false;
+  banner.classList.remove('tb-banner--out');
+  void banner.offsetWidth;
+  banner.classList.add('tb-banner--in');
+  setTimeout(() => game?.burstConfetti(), 900);
+  setTimeout(() => banner.classList.add('tb-banner--out'), 2600);
+  setTimeout(() => {
+    banner.hidden = true;
+    banner.classList.remove('tb-banner--in', 'tb-banner--out');
+    root.classList.remove('celebrating');
+    showSecret();
+  }, 3100);
+}
+
 function showSecret() {
   if (!game || reader.isOpen || finish.open) return;
   game.paused = true;
@@ -153,7 +171,7 @@ async function boot() {
         audio,
         hud,
         onFinish: showFinish,
-        onAllCoins: showSecret,
+        onAllCoins: celebrateAllCoins,
         onRead: (station) => {
           game.paused = true;
           reader.open(station.target);

@@ -9,7 +9,21 @@ import { clamp, lerp, smoothstep } from './utils.js';
 
 const COARSE = window.matchMedia('(pointer: coarse)').matches;
 // Full-resolution rendering: native pixels, capped so phones stay smooth.
-const MAX_DPR = COARSE ? 1.5 : 2;
+/**
+ * Quality tiers. The game starts at the best tier for the device and steps down
+ * on its own if frames start taking too long, then back up once things are calm.
+ *  dpr: max pixel ratio · propShadows: scenery casts shadows · shadow: shadow map size
+ */
+const TIERS = [
+  { dpr: 1, propShadows: false, shadow: 1024 },
+  { dpr: 1.25, propShadows: false, shadow: 1024 },
+  { dpr: 1.5, propShadows: false, shadow: 2048 },
+  { dpr: 2, propShadows: true, shadow: 2048 },
+];
+// Start one step below the best and earn the top tier after ten smooth seconds.
+const START_TIER = COARSE ? 1 : 2;
+const MAX_TIER = COARSE ? 2 : 3;
+const DEVICE_DPR = window.devicePixelRatio || 1;
 const RUN_SPEED = COARSE ? 12 : 10; // voxels per second (a little faster on phones)
 const READ_RANGE = 2.4; // how close (along the road) you must be to read a station
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
@@ -86,6 +100,15 @@ export class Game {
     this.updateCamera(0, true);
     await nextFrame();
     this.renderer.compile(this.scene, this.camera);
+    this.scene.traverse((o) => {
+      const mats = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+      mats.forEach((m) => m.map && this.renderer.initTexture(m.map));
+    });
+    // Render every zone once so all geometry is on the GPU before the run starts.
+    const vis = this.zones.map((z) => z.group.visible);
+    this.zones.forEach((z) => (z.group.visible = true));
+    this.renderer.render(this.scene, this.camera);
+    this.zones.forEach((z, k) => (z.group.visible = vis[k]));
     this.renderer.render(this.scene, this.camera);
     this.resume();
     progress(1, 'Ready!');
@@ -94,8 +117,9 @@ export class Game {
   // ---------------------------------------------------------------- setup
 
   setupRenderer() {
-    const r = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, powerPreference: 'high-performance' });
-    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_DPR));
+    const r = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: DEVICE_DPR < 1.5, powerPreference: 'high-performance' });
+    this.tier = START_TIER;
+    r.setPixelRatio(Math.min(DEVICE_DPR, TIERS[this.tier].dpr));
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer = r;
@@ -107,7 +131,7 @@ export class Game {
     this.hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
     this.sun = new THREE.DirectionalLight(0xffffff, 1.6);
     this.sun.castShadow = true;
-    const size = COARSE ? 1024 : 2048;
+    const size = TIERS[this.tier].shadow;
     this.sun.shadow.mapSize.set(size, size);
     Object.assign(this.sun.shadow.camera, { left: -24, right: 24, top: 16, bottom: -16, near: 1, far: 80 });
     this.sun.shadow.bias = -0.0008;
@@ -273,7 +297,7 @@ export class Game {
     z.coinMesh.frustumCulled = false;
     z.coinMesh.castShadow = true;
     z.group.traverse((o) => {
-      if (o.isInstancedMesh) { o.receiveShadow = true; o.castShadow = !COARSE; }
+      if (o.isInstancedMesh) { o.receiveShadow = true; o.castShadow = TIERS[this.tier].propShadows; }
       if (o.isMesh && o.parent?.type === 'Group' && !o.isInstancedMesh) o.receiveShadow = false;
     });
     this.scene.add(z.group, z.coinMesh);
@@ -282,10 +306,50 @@ export class Game {
 
   resize() {
     const w = window.innerWidth, h = window.innerHeight;
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_DPR));
+    this.renderer.setPixelRatio(Math.min(DEVICE_DPR, TIERS[this.tier].dpr));
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+  }
+
+  /** Switch quality tier at runtime. */
+  setTier(t) {
+    t = clamp(t, 0, TIERS.length - 1);
+    if (t === this.tier) return;
+    this.tier = t;
+    const q = TIERS[t];
+    this.resize();
+    if (this.sun.shadow.mapSize.x !== q.shadow) {
+      this.sun.shadow.mapSize.set(q.shadow, q.shadow);
+      this.sun.shadow.map?.dispose();
+      this.sun.shadow.map = null;
+    }
+    this.zones.forEach((z) => z.group.traverse((o) => { if (o.isInstancedMesh) o.castShadow = q.propShadows; }));
+  }
+
+  /** Called every frame with the real frame time. */
+  watchPerformance(rawDt) {
+    if (rawDt > 0.25 || this.paused || document.hidden) return; // tab switches, dialogs
+    const pf = (this.perf ??= { sum: 0, n: 0, calm: 0, cool: 0 });
+    pf.cool = Math.max(0, pf.cool - rawDt);
+    pf.sum += rawDt;
+    pf.n++;
+    if (pf.n < 45) return;
+    const avg = pf.sum / pf.n;
+    pf.sum = 0;
+    pf.n = 0;
+    if (avg > 1 / 48 && pf.cool === 0 && this.tier > 0) {
+      this.setTier(this.tier - 1); // dropping below ~48 fps: lighten the load
+      pf.cool = 2;
+      pf.calm = 0;
+    } else if (avg < 1 / 58) {
+      pf.calm += 45 * avg;
+      if (pf.calm > 10 && this.tier < MAX_TIER && pf.cool === 0) {
+        this.setTier(this.tier + 1); // 10 smooth seconds: try a step up
+        pf.calm = 0;
+        pf.cool = 4;
+      }
+    } else pf.calm = 0;
   }
 
   // ---------------------------------------------------------------- control
@@ -329,7 +393,7 @@ export class Game {
     }
     this.audio?.sfx('fanfare');
     this.burstConfetti();
-    setTimeout(() => this.onAllCoins?.(), 1400);
+    this.onAllCoins?.();
   }
 
   burstConfetti() {
@@ -401,7 +465,9 @@ export class Game {
   tick() {
     if (!this.running) return;
     this.raf = requestAnimationFrame(this.tick);
-    const dt = Math.min(this.clock.getDelta(), 0.05);
+    const rawDt = this.clock.getDelta();
+    const dt = Math.min(rawDt, 0.05);
+    this.watchPerformance(rawDt);
     this.time += dt;
     const { N, minX, maxX } = this.world;
 
@@ -451,6 +517,7 @@ export class Game {
     if (near !== this.near) {
       this.near = near;
       this.hud?.setPrompt(near);
+      this.promptW = 0;
     }
 
     // ---- Look: blend the two nearest zones ----
@@ -506,7 +573,8 @@ export class Game {
       this.promptEl ??= document.getElementById('prompt');
       const v = this._v.set(this.x, 4.4 + this.character.jumpY, 0).project(this.camera);
       const px = ((v.x + 1) / 2) * window.innerWidth, py = ((1 - v.y) / 2) * window.innerHeight;
-      const half = (this.promptEl.offsetWidth || 0) / 2 + 12;
+      if (!this.promptW) this.promptW = this.promptEl.offsetWidth; // measured once per prompt, not every frame
+      const half = (this.promptW || 0) / 2 + 12;
       this.promptEl.style.transform = `translate(${clamp(px, half, window.innerWidth - half)}px, ${Math.max(70, py)}px) translate(-50%, -100%)`;
     }
 
@@ -521,8 +589,8 @@ export class Game {
     // Look a little ahead of where the runner is heading.
     this.lead = lerp(this.lead ?? 3, this.facing * (portrait ? 1 : 4), snap ? 1 : 1 - Math.exp(-dt * 2));
     const dist = portrait ? clamp(12 / this.camera.aspect, 18, 27) : 19;
-    const target = new THREE.Vector3(this.x + this.lead, portrait ? 8 : 6.5, dist);
-    const look = new THREE.Vector3(this.x + this.lead, portrait ? 1.2 : 2.6, -2);
+    const target = (this._camTarget ??= new THREE.Vector3()).set(this.x + this.lead, portrait ? 8 : 6.5, dist);
+    const look = (this._camLookTo ??= new THREE.Vector3()).set(this.x + this.lead, portrait ? 1.2 : 2.6, -2);
     if (snap || !this.camLook) {
       this.camera.position.copy(target);
       this.camLook = look.clone();

@@ -160,6 +160,22 @@ html.booting body { overflow: hidden; }
 .finish .reader-body { text-align: center; padding-bottom: 24px; }
 .finish .ctas { justify-content: center; }
 .finish .link-btn { display: block; margin: 4px auto 0; }
+/* Technoblade tribute banner (100-coin easter egg) */
+.tb-banner {
+  position: fixed; z-index: 16; left: 50%; top: 24%; transform: translate(-50%, 0); pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; font-family: var(--font-head);
+  width: max-content; max-width: 92vw;
+}
+.tb-banner[hidden] { display: none; }
+html.celebrating .prompt, html.celebrating .help { visibility: hidden; }
+.tb-banner span { font-size: clamp(18px, 4.4vw, 46px); color: #ffd23f; text-shadow: 4px 4px 0 #b83a5e, 8px 8px 0 #000; }
+.tb-banner strong { font-weight: 400; font-size: clamp(14px, 3vw, 30px); color: #fff; text-shadow: 3px 3px 0 #ff5c8a, 6px 6px 0 #000; }
+.tb-banner--in { animation: tbIn 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both, tbPulse 0.9s ease-in-out 0.6s infinite; }
+.tb-banner--out { animation: tbOut 0.45s ease-in forwards; }
+@keyframes tbIn { from { transform: translate(-50%, -40px) scale(2.4) rotate(-6deg); opacity: 0; } to { transform: translate(-50%, 0) scale(1) rotate(0); opacity: 1; } }
+@keyframes tbPulse { 50% { transform: translate(-50%, 0) scale(1.06) rotate(-1.5deg); } }
+@keyframes tbOut { to { transform: translate(-50%, -30px) scale(0.8); opacity: 0; } }
+.secret-tb { font-family: var(--font-head); font-size: 12px; color: #ff5c8a; text-transform: uppercase; letter-spacing: 0.05em; margin: -4px 0 14px; }
 .secret { box-shadow: 0 0 0 4px #ffd23f, 0 0 0 8px #14162b, 0 0 60px 10px rgba(255, 210, 63, 0.45); }
 .secret h2 { color: var(--gold) !important; }
 .secret-crown { font-size: 54px; line-height: 1; color: var(--gold); margin: 4px 0 12px; animation: crownBob 1.2s ease-in-out infinite; }
