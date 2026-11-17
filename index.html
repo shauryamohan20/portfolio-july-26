@@ -41,7 +41,7 @@
           <button type="button" class="btn" data-action="start-muted">Start muted</button>
         </div>
         <button type="button" class="link-btn" data-action="plain">Skip to normal view</button>
-        <p class="boot-help boot-help--keys">Run with the arrow keys, A / D or the mouse wheel. Space jumps. Press E under a glowing marker to read it. M toggles music.</p>
+        <p class="boot-help boot-help--keys">Run with the arrow keys, A / D or the mouse wheel. Hold Shift to sprint. Space jumps. Press E under a glowing marker to read it. M toggles music.</p>
         <p class="boot-help boot-help--touch">Hold &#9664; &#9654; to run. Tap &#9650; to jump. Tap A under a glowing marker to read it.</p>
       </div>
     </div>
@@ -108,11 +108,17 @@
         </p>
       </div>
     </dialog>
+    <aside id="sky-card" class="sky-card game-only" aria-live="polite" hidden>
+      <p class="sky-card-kicker"></p>
+      <p class="sky-card-title"></p>
+      <ul class="sky-card-points"></ul>
+      <p class="sky-card-read" hidden><kbd class="kbd-keys">E</kbd><kbd class="kbd-touch">A</kbd> Read more</p>
+    </aside>
     <div id="prompt" class="prompt game-only" hidden>
       <button type="button" class="prompt-btn" data-action="interact"><kbd>E</kbd><span class="prompt-label"><small>Press to read</small><span class="prompt-text"></span></span></button>
     </div>
     <div id="help" class="help game-only" hidden>
-      <p class="help-keys">&larr; &rarr; or scroll to run &middot; Space to jump &middot; E to read</p>
+      <p class="help-keys">&larr; &rarr; or scroll to run &middot; Shift to sprint &middot; Space to jump &middot; E to read</p>
       <p class="help-touch">Hold &#9664; &#9654; to run &middot; &#9650; to jump &middot; A to read</p>
     </div>
     <div class="touch game-only" aria-hidden="true">

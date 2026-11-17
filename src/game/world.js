@@ -12,6 +12,9 @@ const Z_FRONT = 14; // terrain edge nearest the camera
 /** Coins in the whole run (same on phones and desktop). Collect them all for a surprise. */
 export const TOTAL_COINS = 100;
 export const END_PAD = COARSE ? 14 : 22; // extra ground before the first and after the last zone
+/** Cruising height of the plane in the Skills zone (see flight.js). */
+export const SKY_ALT = 30; // above the zone signs and the mountains
+const SKY_TRACK = 124; // length of the plane ride, in track units
 
 /**
  * The run: zones line up left to right along one road (z = 0), in content order.
@@ -51,13 +54,14 @@ export function createWorld(themes) {
     const rng = mulberry32(1000 + i * 977);
     const b = new VoxelBatch();
     const stations = [];
+    const pads = []; // the plane's launch pad (Skills zone)
     const extras = new THREE.Group(); // textured meshes (billboards)
     const occupied = [];
     const x0 = i * ZONE, x1 = (i + 1) * ZONE, cx = x0 + ZONE / 2;
     const bx0 = i === 0 ? minX : x0, bx1 = i === N - 1 ? maxX : x1; // build range incl. end pads
 
     const ctx = {
-      b, rng, th, i, L: ZONE, x0, x1, cx, top, extras,
+      b, rng, th, i, L: ZONE, x0, x1, cx, top, extras, pads,
       flat(x, z, w, d = w) { flatSpots.push({ x, z, w, d }); },
       reserve(x, z, r) { occupied.push({ x, z, r }); },
       /** A readable spot on the road: stand under the marker and press E. */
@@ -77,6 +81,25 @@ export function createWorld(themes) {
 
     // Landmarks first (they flatten their ground), then scenery.
     for (const name of th.props) (PROPS[name] || PROPS.trees)(ctx);
+
+    // The Skills zone is a plane ride: its skills float past on islands in the sky.
+    let flight = null;
+    const launch = pads.find((p) => p.kind === 'launch');
+    if (launch) {
+      const items = th.flightItems || 3;
+      flight = {
+        padX: launch.x,
+        catchX: launch.x + 7,
+        dropX: x1 - 7,
+        length: SKY_TRACK,
+        islands: Array.from({ length: items }, (_, k) => ({ index: k, track: 36 + (k * (SKY_TRACK - 52)) / Math.max(1, items - 1) })),
+      };
+      flight.islands.forEach((isl) => {
+        isl.station = { zone: i, sky: true, x: 0, label: th.skyLabels?.[isl.index] || 'Skill', target: { type: 'service', index: isl.index } };
+        stations.push(isl.station);
+      });
+    }
+
     if (!stations.length) PROPS.signStation(ctx);
     if (i > 0) PROPS.signpost(ctx);
 
@@ -135,6 +158,7 @@ export function createWorld(themes) {
     // Floating diamond over each readable station.
     const markers = new THREE.Group();
     for (const s of stations) {
+      if (s.sky) continue; // sky islands have their own label
       const m = new THREE.Mesh(MARKER_GEO, new THREE.MeshBasicMaterial({ color: th.accent }));
       m.position.set(s.x, s.markerY, 0);
       m.userData.baseY = s.markerY;
@@ -151,6 +175,20 @@ export function createWorld(themes) {
     const coins = [];
     const share = Math.floor(TOTAL_COINS / N) + (i < TOTAL_COINS % N ? 1 : 0);
     const trails = Math.ceil(share / 5);
+    if (flight) {
+      // In the sky, between the islands: level trails and arcs you climb for.
+      let leftSky = share;
+      for (let t = 0; t < trails; t++) {
+        const n = Math.min(5, leftSky);
+        leftSky -= n;
+        const start = 16 + (t * (SKY_TRACK - 30)) / Math.max(1, trails - 1);
+        for (let c = 0; c < n; c++) {
+          const y = SKY_ALT + 1.6 + (t % 2 === 1 && n > 1 ? Math.sin((c / (n - 1)) * Math.PI) * 3.6 : 0);
+          coins.push({ track: start + c * 1.6, x: 0, y, z: 0, collected: false, anim: 0 });
+        }
+      }
+      return { group, coins, stations, markers, pads, flight, x0, x1 };
+    }
     let left = share;
     for (let t = 0; t < trails; t++) {
       const n = Math.min(5, left);
@@ -164,7 +202,7 @@ export function createWorld(themes) {
       }
     }
 
-    return { group, coins, stations, markers, x0, x1 };
+    return { group, coins, stations, markers, pads, flight, x0, x1 };
   }
 
   return { N, minX, maxX, top, buildZone, mats, zoneAt, spawnX: themes.length ? ZONE * 0.18 : 0 };

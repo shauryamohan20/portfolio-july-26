@@ -191,11 +191,11 @@ export class Character {
   update(dt, o) {
     const target = o.running ? 1 : 0;
     this.run = lerp(this.run, target, 1 - Math.exp(-dt * 10));
-    this.idleTime = o.running ? 0 : this.idleTime + dt;
+    this.idleTime = o.running || o.pose ? 0 : this.idleTime + dt;
     this.phase += dt * clamp(6 + o.speed * 0.9, 6, 20) * (this.run > 0.05 ? 1 : 0.25);
 
     // Facing: along the path while running, toward the camera while idle.
-    const wantYaw = o.running ? o.moveYaw : o.camYaw;
+    const wantYaw = o.face ?? (o.running ? o.moveYaw : o.camYaw);
     let dy = wantYaw - this.yaw;
     dy = Math.atan2(Math.sin(dy), Math.cos(dy));
     this.yaw += dy * (1 - Math.exp(-dt * 8));
@@ -225,6 +225,19 @@ export class Character {
     hy = Math.atan2(Math.sin(hy), Math.cos(hy));
     this.head.rotation.y = clamp(hy, -1.0, 1.0) * (0.55 * r + 0.2 * (1 - r));
     this.head.rotation.x = -0.05 * r;
+
+    // Riding poses: in the plane (hands on the controls) or hanging from the parachute.
+    if (o.pose === 'seated') {
+      this.armL.rotation.x = this.armR.rotation.x = -0.9;
+      this.legL.rotation.x = this.legR.rotation.x = -1.2;
+    } else if (o.pose === 'hang') {
+      this.armL.rotation.x = this.armR.rotation.x = -2.8;
+      this.armL.rotation.z = 0.25;
+      this.armR.rotation.z = -0.25;
+      const sway = Math.sin(this.phase * 0.6) * 0.25;
+      this.legL.rotation.x = sway;
+      this.legR.rotation.x = -sway;
+    }
 
     // Jump physics.
     if (this.jumpY > 0 || this.vy > 0) {

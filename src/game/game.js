@@ -4,6 +4,7 @@ import { site } from '../content.js';
 import { getTheme } from './themes.js';
 import { createWorld, ZONE, TOTAL_COINS } from './world.js';
 import { Character } from './character.js';
+import { Flight } from './flight.js';
 import { pendingTextures, setRenderer } from './props.js';
 import { clamp, lerp, smoothstep } from './utils.js';
 
@@ -25,6 +26,7 @@ const START_TIER = COARSE ? 1 : 2;
 const MAX_TIER = COARSE ? 2 : 3;
 const DEVICE_DPR = window.devicePixelRatio || 1;
 const RUN_SPEED = COARSE ? 12 : 10; // voxels per second (a little faster on phones)
+const SPRINT = 1.75; // hold Shift to run this much faster
 const READ_RANGE = 2.4; // how close (along the road) you must be to read a station
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
 
@@ -87,6 +89,9 @@ export class Game {
       await nextFrame();
       this.ensureZone(i);
     }
+    this.flight = new Flight({ scene: this.scene, audio: this.audio, mats: this.world.mats, card: document.getElementById('sky-card') });
+    const skyZone = this.zones.find((z) => z.flight);
+    if (skyZone) this.flight.setZone(skyZone);
 
     // Wait for the store screenshots on the billboards.
     let loaded = 0;
@@ -107,7 +112,10 @@ export class Game {
     // Render every zone once so all geometry is on the GPU before the run starts.
     const vis = this.zones.map((z) => z.group.visible);
     this.zones.forEach((z) => (z.group.visible = true));
+    const sky = this.flight.skyObjects();
+    sky.forEach((o) => (o.visible = true));
     this.renderer.render(this.scene, this.camera);
+    sky.forEach((o) => (o.visible = false));
     this.zones.forEach((z, k) => (z.group.visible = vis[k]));
     this.renderer.render(this.scene, this.camera);
     this.resume();
@@ -199,19 +207,25 @@ export class Game {
     window.addEventListener('keydown', (e) => {
       if (!active() || e.ctrlKey || e.metaKey || e.altKey || typing(e.target)) return;
       const onControl = e.target.closest?.('button, a');
+      if (e.key === 'Shift') this.sprint = true;
       if (KEYS[e.code]) {
         this.held.add(KEYS[e.code]);
         e.preventDefault();
       } else if (JUMP_KEYS.has(e.code) && !(e.code === 'Space' && onControl)) {
         e.preventDefault();
-        this.jump();
+        this.climbKey = true; // in the plane: hold to climb
+        if (!e.repeat) this.jump();
       } else if ((e.code === 'KeyE' || (e.code === 'Enter' && !onControl)) && this.near) {
         e.preventDefault();
         this.interact();
       }
     });
-    window.addEventListener('keyup', (e) => KEYS[e.code] && this.held.delete(KEYS[e.code]));
-    window.addEventListener('blur', () => { this.held.clear(); this.drag = 0; });
+    window.addEventListener('keyup', (e) => {
+      if (KEYS[e.code]) this.held.delete(KEYS[e.code]);
+      if (JUMP_KEYS.has(e.code)) this.climbKey = false;
+      if (e.key === 'Shift') this.sprint = false;
+    });
+    window.addEventListener('blur', () => { this.held.clear(); this.drag = 0; this.climbKey = this.climbTouch = this.sprint = false; });
 
     // Mouse wheel / trackpad: scrolling runs the character.
     window.addEventListener('wheel', (e) => {
@@ -228,6 +242,7 @@ export class Game {
     this.canvas.addEventListener('pointerdown', (e) => {
       if (!active()) return;
       start = { x: e.clientX, t: this.time, id: e.pointerId, moved: false };
+      if (this.flight?.active) this.climbTouch = true; // in the plane, touch and hold to climb
     });
     window.addEventListener('pointermove', (e) => {
       if (!start || e.pointerId !== start.id) return;
@@ -239,6 +254,7 @@ export class Game {
       if (!start || e.pointerId !== start.id) return;
       if (!start.moved && this.time - start.t < 0.3) this.jump();
       start = null;
+      this.climbTouch = false;
       this.drag = 0;
     };
     window.addEventListener('pointerup', end);
@@ -284,7 +300,9 @@ export class Game {
       btn.addEventListener('pointerup', up);
       btn.addEventListener('pointercancel', up);
     };
-    tapButton('.touch-jump', () => this.jump());
+    tapButton('.touch-jump', () => { this.climbTouch = true; this.jump(); });
+    const jumpBtn = document.querySelector('.touch-jump');
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => jumpBtn?.addEventListener(ev, () => (this.climbTouch = false)));
     tapButton('.touch-a', () => this.interact());
     window.addEventListener('blur', () => { holds.clear(); syncHold(); });
   }
@@ -340,11 +358,12 @@ export class Game {
     pf.n = 0;
     if (avg > 1 / 48 && pf.cool === 0 && this.tier > 0) {
       this.setTier(this.tier - 1); // dropping below ~48 fps: lighten the load
+      this.tierCap = this.tier; // and stay there, so quality doesn't keep flipping (each switch is a hitch)
       pf.cool = 2;
       pf.calm = 0;
     } else if (avg < 1 / 58) {
       pf.calm += 45 * avg;
-      if (pf.calm > 10 && this.tier < MAX_TIER && pf.cool === 0) {
+      if (pf.calm > 10 && this.tier < (this.tierCap ?? MAX_TIER) && pf.cool === 0) {
         this.setTier(this.tier + 1); // 10 smooth seconds: try a step up
         pf.calm = 0;
         pf.cool = 4;
@@ -368,7 +387,7 @@ export class Game {
   }
 
   jump() {
-    if (!this.character || this.paused) return;
+    if (!this.character || this.paused || this.flight?.active) return;
     if (this.character.jumpY <= 0.001) this.audio?.sfx('jump');
     this.character.jump();
   }
@@ -437,6 +456,7 @@ export class Game {
 
   /** Start over: back to the beginning with every coin back in place. */
   restart() {
+    this.flight?.end();
     this.zones.forEach((z) => z.coins.forEach((c) => { c.collected = false; c.anim = 0; }));
     this.coinCount = 0;
     this.hud?.setCoins(0, TOTAL_COINS);
@@ -452,11 +472,12 @@ export class Game {
   travel(i) {
     const z = this.zones[i];
     if (!z) return;
-    const x = z.stations[0] ? z.stations[0].x : (z.x0 + z.x1) / 2;
+    // The Skills zone starts at its launch pad; the others at their first station.
+    const x = z.flight ? z.flight.padX - 4 : z.stations[0] ? z.stations[0].x : (z.x0 + z.x1) / 2;
     const flash = document.querySelector('.warp');
     gsap.timeline()
       .to(flash, { opacity: 1, duration: 0.18, ease: 'power1.in' })
-      .add(() => { this.x = x - 0.5; this.vx = 0; this.snapLook = true; this.updateCamera(0, true); })
+      .add(() => { this.flight?.end(); this.x = x - 0.5; this.vx = 0; this.snapLook = true; this.updateCamera(0, true); })
       .to(flash, { opacity: 0, duration: 0.35, ease: 'power1.out' });
   }
 
@@ -466,7 +487,9 @@ export class Game {
     if (!this.running) return;
     this.raf = requestAnimationFrame(this.tick);
     const rawDt = this.clock.getDelta();
-    const dt = Math.min(rawDt, 0.05);
+    // Smooth the frame time a little, so one slow frame doesn't make everything lurch.
+    this.sdt = this.sdt ? lerp(this.sdt, clamp(rawDt, 1 / 240, 0.05), 0.2) : 1 / 60;
+    const dt = rawDt > 0.25 ? 1 / 60 : this.sdt;
     this.watchPerformance(rawDt);
     this.time += dt;
     const { N, minX, maxX } = this.world;
@@ -478,8 +501,18 @@ export class Game {
       if (!dir && this.time < this.wheelUntil) dir = this.wheelDir;
       dir = clamp(dir, -1, 1);
     }
-    this.vx = lerp(this.vx, dir * RUN_SPEED, 1 - Math.exp(-dt * (dir ? 9 : 12)));
-    this.x = clamp(this.x + this.vx * dt, minX + 6, maxX - 6);
+    const flying = this.flight.active;
+    if (flying) {
+      // The plane ride (or the fall after it) moves the runner.
+      this.flight.update(this, this.paused ? 0 : dt, { dir, climb: !this.paused && Boolean(this.climbKey || this.climbTouch) });
+      this.vx = this.flight.state === 'drop' ? this.flight.dvx : this.flight.xv;
+      this.facing = 1;
+    } else {
+      const top = RUN_SPEED * (this.sprint ? SPRINT : 1);
+      this.vx = lerp(this.vx, dir * top, 1 - Math.exp(-dt * (dir ? 7 : 10)));
+      this.x = clamp(this.x + this.vx * dt, minX + 6, maxX - 6);
+      if (!this.paused) this.flight.checkPads(this, dt);
+    }
     // Reaching the end of the road finishes the run (once, until you head back).
     if (!this.finished && !this.paused && this.x >= maxX - 8) {
       this.finished = true;
@@ -489,8 +522,9 @@ export class Game {
       this.onFinish?.(this.coinCount);
     } else if (this.finished && this.x < maxX - 20) this.finished = false;
     if (Math.abs(this.vx) > 0.3) this.facing = Math.sign(this.vx);
-    const running = Math.abs(this.vx) > 0.6;
-    this.character.root.position.set(this.x, 0, 0);
+    const running = !flying && Math.abs(this.vx) > 0.6;
+    this.alt = this.flight.alt;
+    this.character.root.position.set(this.x, this.alt, 0);
 
     // ---- Zone, stations, coins ----
     const cur = this.world.zoneAt(this.x);
@@ -505,6 +539,7 @@ export class Game {
       if (!vis) return;
       this.updateCoins(z, dt);
       for (const s of z.stations) {
+        if (s.sky) continue; // read from the plane (flight.nearStation)
         s.marker.position.y = s.marker.userData.baseY + Math.sin(this.time * 3 + s.x) * 0.2;
         // The marker you can read grows and spins faster.
         const active = s === this.near;
@@ -514,9 +549,10 @@ export class Game {
         if (d < nearD) { nearD = d; near = s; }
       }
     });
+    if (this.flight.active) near = this.flight.nearStation();
     if (near !== this.near) {
       this.near = near;
-      this.hud?.setPrompt(near);
+      this.hud?.setPrompt(this.flight.active ? null : near);
       this.promptW = 0;
     }
 
@@ -559,7 +595,9 @@ export class Game {
 
     this.updateCamera(dt);
     const camYaw = Math.atan2(this.camera.position.x - this.x, this.camera.position.z);
-    this.character.update(dt, { running, speed: Math.abs(this.vx), moveYaw: this.facing * Math.PI / 2, camYaw });
+    const pose = flying ? (this.flight.state === 'fly' ? 'seated' : 'hang') : null;
+    this.character.update(dt, { running, speed: Math.abs(this.vx), moveYaw: this.facing * Math.PI / 2, camYaw, pose, face: flying ? Math.PI / 2 : null });
+    this.flight.afterFrame(this, dt);
 
     this.skyDome.position.copy(this.camera.position);
     this.stars.position.copy(this.camera.position);
@@ -571,7 +609,7 @@ export class Game {
     // Float the "press E" bubble above the player's head.
     if (this.near) {
       this.promptEl ??= document.getElementById('prompt');
-      const v = this._v.set(this.x, 4.4 + this.character.jumpY, 0).project(this.camera);
+      const v = this._v.set(this.x, 4.4 + this.character.jumpY + this.alt, 0).project(this.camera);
       const px = ((v.x + 1) / 2) * window.innerWidth, py = ((1 - v.y) / 2) * window.innerHeight;
       if (!this.promptW) this.promptW = this.promptEl.offsetWidth; // measured once per prompt, not every frame
       const half = (this.promptW || 0) / 2 + 12;
@@ -588,9 +626,14 @@ export class Game {
     if (this.camera.fov !== fov) { this.camera.fov = fov; this.camera.updateProjectionMatrix(); }
     // Look a little ahead of where the runner is heading.
     this.lead = lerp(this.lead ?? 3, this.facing * (portrait ? 1 : 4), snap ? 1 : 1 - Math.exp(-dt * 2));
-    const dist = portrait ? clamp(12 / this.camera.aspect, 18, 27) : 19;
-    const target = (this._camTarget ??= new THREE.Vector3()).set(this.x + this.lead, portrait ? 8 : 6.5, dist);
-    const look = (this._camLookTo ??= new THREE.Vector3()).set(this.x + this.lead, portrait ? 1.2 : 2.6, -2);
+    // Rise with the rider in the plane and under the parachute (and pull back a little up there).
+    const up = this.alt || 0;
+    const st = this.flight?.state;
+    const sky = st === 'fly' || st === 'board' ? 1 : 0;
+    this.camBack = lerp(this.camBack ?? 0, sky * (portrait ? 8 : 9), snap ? 1 : 1 - Math.exp(-dt * (sky ? 1.2 : 0.6)));
+    const dist = (portrait ? clamp(12 / this.camera.aspect, 18, 27) : 19) + this.camBack;
+    const target = (this._camTarget ??= new THREE.Vector3()).set(this.x + this.lead, (portrait ? 8 : 6.5) + up, dist);
+    const look = (this._camLookTo ??= new THREE.Vector3()).set(this.x + this.lead, (portrait ? 1.2 : 2.6) + up + this.camBack * 0.25, -2);
     if (snap || !this.camLook) {
       this.camera.position.copy(target);
       this.camLook = look.clone();
@@ -604,9 +647,21 @@ export class Game {
 
   updateCoins(z, dt) {
     const { _m: m, _q: q, _e: e, _v: v, _s: s } = this;
-    const cy = 1.6 + this.character.jumpY; // the runner's middle
+    const cy = 1.6 + this.character.jumpY + (this.alt || 0); // the runner's middle
+    const inSky = this.flight.state === 'fly';
     z.coins.forEach((c, k) => {
-      if (this.time > 1.2 && !c.collected && Math.abs(c.x - this.x) < 0.8 && Math.abs(c.y - cy) < 1.5) {
+      if (c.track != null) {
+        // Sky coins stream past the plane; they only exist during the ride.
+        if (!inSky) {
+          s.setScalar(0.0001);
+          m.compose(v.set(this.x, -50, 0), q, s);
+          z.coinMesh.setMatrixAt(k, m);
+          return;
+        }
+        c.x = this.flight.trackX(this.x, c.track);
+      }
+      const reach = c.track != null ? 1.2 : 0.8;
+      if (this.time > 1.2 && !c.collected && Math.abs(c.x - this.x) < reach && Math.abs(c.y - cy) < (c.track != null ? 2 : 1.5)) {
         c.collected = true;
         this.coinCount++;
         this.hud?.setCoins(this.coinCount, TOTAL_COINS);

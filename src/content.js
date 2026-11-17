@@ -67,7 +67,7 @@ export const sections = [
     eyebrow: 'Level 1',
     heading: 'About Shaurya Mohan',
     paragraphs: [
-      "I've been building websites for more than 5 years, and Shopify is what I do. I build stores for brands in India, the Middle East and beyond, from fashion labels to home goods and beauty.",
+      "I've been building websites for more than 5 years, and Shopify is what I do. I build stores for brands in the US and around the world, from fashion labels to home goods and beauty.",
       'I work in Liquid, HTML, CSS and JavaScript, so a store can look exactly like the brand and still be easy for its team to edit in the Shopify theme editor.',
       'Every store I build is made to be fast on phones, readable by search engines and accessible to every shopper, because a good-looking store still has to sell.',
     ],
@@ -138,7 +138,7 @@ export const sections = [
       },
       {
         title: 'Cord Studio', featured: true,
-        category: 'Clothing and leather goods label, India',
+        category: 'Clothing and leather goods label',
         summary: 'An image-led fashion store with seasonal collections and monogramming added right on the product page.',
         did: ['Shopify store build', 'Editorial layouts', 'Product personalization'],
         platform: 'Shopify', metric: null,

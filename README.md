@@ -44,7 +44,9 @@ Or push the folder to GitHub and import it on vercel.com (**Add New > Project**)
 ## Controls (game view)
 
 - **Run:** ← → or A / D, or scroll the mouse wheel / trackpad
+- **Sprint:** hold Shift while running
 - **Jump:** Space, ↑ or W (some coin trails need a jump)
+- **Plane ride:** run onto the TAKE OFF pad in the Skills zone; hold Space / ▲ to climb for the sky coins
 - **Read:** E or Enter under a glowing marker
 - **Fast travel:** the section bar at the bottom
 - **Music:** M, or the Music button (off until you choose "Start with sound")

@@ -325,6 +325,33 @@ html.game .reader .work-list { list-style: none; display: block; margin-top: 12p
 .reader h3 { font-size: 14px; }
 
 /* "press E" prompt: a big speech bubble that floats above the player's head */
+/* Info card shown in the air: skills during the plane ride, facts on boost pads */
+.sky-card {
+  position: fixed; z-index: 14; left: 50%; top: 84px; transform: translateX(-50%);
+  width: min(420px, calc(100vw - 32px)); padding: 14px 18px 16px; pointer-events: none;
+  background: rgba(20, 23, 42, 0.86); color: #fff; border: 3px solid #3fd0ff; box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.45);
+  font-family: var(--font-body, system-ui);
+}
+.sky-card[hidden] { display: none; }
+.sky-card.is-in { animation: skyIn 0.42s cubic-bezier(0.2, 1.2, 0.4, 1) both; }
+@keyframes skyIn { from { opacity: 0; transform: translate(-50%, -14px) scale(0.96); } }
+.sky-card-kicker { margin: 0 0 6px; font-family: var(--font-head); font-size: 10px; color: #3fd0ff; text-transform: uppercase; letter-spacing: 0.08em; }
+.sky-card-title { margin: 0; font-family: var(--font-head); font-size: 15px; line-height: 1.45; color: #ffd23f; }
+.sky-card-points { margin: 10px 0 0; padding: 0 0 0 18px; font-size: 14px; line-height: 1.45; }
+.sky-card-points[hidden] { display: none; }
+.sky-card-read { margin: 12px 0 0; display: flex; align-items: center; gap: 8px; font-family: var(--font-head); font-size: 10px; color: #ffd23f; text-transform: uppercase; }
+.sky-card-read[hidden] { display: none; }
+.sky-card-read kbd { display: inline-grid; place-items: center; width: 26px; height: 26px; background: #ffd23f; color: #14172a; border: 2px solid #000; font: inherit; font-size: 11px; }
+.sky-card-read .kbd-touch { display: none; }
+@media (pointer: coarse) { .sky-card-read .kbd-keys { display: none; } .sky-card-read .kbd-touch { display: inline-grid; } }
+.sky-card-points li + li { margin-top: 3px; }
+@media (max-width: 700px) {
+  .sky-card { top: 124px; padding: 10px 14px 12px; }
+  .sky-card-title { font-size: 12px; }
+  .sky-card-points { font-size: 12.5px; }
+  .sky-card-points li:nth-child(n + 3) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sky-card.is-in { animation: none; } }
 .prompt { position: fixed; z-index: 15; left: 0; top: 0; will-change: transform; pointer-events: none; }
 .prompt[hidden] { display: none; }
 .prompt-btn {

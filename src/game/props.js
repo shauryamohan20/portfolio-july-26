@@ -121,6 +121,14 @@ function billboard(ctx, x, z, image, frame = '#14172a', trim = '#ff5c8a') {
   ctx.extras.add(board);
 }
 
+/** The launch pad on the road: a dark base, a glowing top and a small up arrow. */
+function drawPad(b, x, color, wide = 1) {
+  b.box(x - 1.1 * wide, 0, -1.2, 2.2 * wide, 0.45, 2.4, '#2b2f45');
+  b.box(x - 0.9 * wide, 0.45, -1.0, 1.8 * wide, 0.2, 2.0, color, true);
+  for (const [dx, dy] of [[0, 2.2], [-0.3, 1.9], [0.3, 1.9], [-0.6, 1.6], [0.6, 1.6], [0, 1.9], [0, 1.6], [0, 1.3], [0, 1.0]])
+    b.box(x + dx - 0.15, dy, -1.6, 0.3, 0.3, 0.3, color, true);
+}
+
 // ---------- builders ----------
 
 export const PROPS = {
@@ -194,6 +202,15 @@ export const PROPS = {
       ctx.b.box(p.x + 0.2, p.y, p.z + 0.2, 0.6, 1.5 + ctx.rng() * 2, 0.6, c, true);
       ctx.b.box(p.x + 0.8, p.y, p.z + 0.5, 0.4, 1 + ctx.rng(), 0.4, c, true);
     }
+  },
+
+  // ---- Skills: a launch pad that bounces you into the plane ride ----
+  launchPad(ctx) {
+    const x = ctx.x0 + 8.5;
+    drawPad(ctx.b, x, '#3fd0ff', 1.4);
+    signboard(ctx, x + 1, -6, 'TAKE OFF', '#3fd0ff');
+    ctx.reserve(x, -6, 5);
+    ctx.pads.push({ x, kind: 'launch' });
   },
 
   // ---- Services: one monument per Shopify service ----

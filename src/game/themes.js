@@ -96,7 +96,8 @@ const THEMES = {
     snow: '#ece6ff',
     leaves: ['#3fbf9f', '#2fa38a'],
     trunk: '#4a3a5a',
-    props: ['bagTower', 'liquidTower', 'boltTower', 'crystals', 'bushes'],
+    props: ['launchPad', 'crystals', 'bushes', 'trees'],
+    skyLabels: ['Shopify store builds', 'Custom Liquid themes', 'Apps, discounts and speed'],
   },
 
   projects: {
