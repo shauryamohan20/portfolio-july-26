@@ -73,13 +73,19 @@ export function createReader({ onClose }) {
 
   dialog.addEventListener('close', () => onClose?.());
   // Click on the backdrop closes it.
-  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  // Click on the backdrop closes it, but not the tap that just opened it
+  // (on phones, lifting the finger from the A button lands on the backdrop).
+  let openedAt = 0;
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog && performance.now() - openedAt > 500) dialog.close();
+  });
 
   return {
     open(target) {
       body.replaceChildren(contentFor(target));
       const h = body.querySelector('h1, h2, h3');
       if (h) h.id = 'reader-title';
+      openedAt = performance.now();
       if (!dialog.open) dialog.showModal();
       body.scrollTop = 0;
       requestAnimationFrame(updateHint);

@@ -29,11 +29,15 @@ const finish = document.getElementById('finish');
 const finishEmail = document.getElementById('finish-email');
 finishEmail.href = `mailto:${site.email}?subject=Shopify%20project`;
 finish.addEventListener('close', () => game && (game.paused = false));
-finish.addEventListener('click', (e) => { if (e.target === finish) finish.close(); });
+let finishOpenedAt = 0;
+finish.addEventListener('click', (e) => {
+  if (e.target === finish && performance.now() - finishOpenedAt > 500) finish.close();
+});
 function showFinish(coins) {
   game.paused = true;
   document.getElementById('finish-coins').textContent = String(coins);
   audio.sfx('coin');
+  finishOpenedAt = performance.now();
   finish.showModal();
   finishEmail.focus();
 }
@@ -134,6 +138,7 @@ async function boot() {
         },
       });
       await game.load(progress);
+      if (import.meta.env.DEV) window.__game = game; // handy for debugging; removed from production builds
     } catch (err) {
       console.error(err);
       status.textContent = '3D could not start. Opening normal view...';

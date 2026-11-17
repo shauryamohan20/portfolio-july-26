@@ -249,6 +249,10 @@ export class Game {
         btn.classList.add('is-down');
         fn();
       });
+      // Cancel the phone's follow-up "click": it would land on whatever just opened
+      // (the reader's backdrop) and close it again straight away.
+      btn.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
+      btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); });
       const up = () => btn.classList.remove('is-down');
       btn.addEventListener('pointerup', up);
       btn.addEventListener('pointercancel', up);
